@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>달당 - 카페 음료 & 디저트 당류 비교</title>
   <meta name="description" content="스타벅스, 투썸플레이스, 이디야 등 카페 음료와 디저트의 당류를 한눈에 비교하세요. 건강한 선택을 위한 달당!">
-  <meta name="keywords" content="카페, 음료, 디저트, 당류, 당분, 건강, 스타벅스, 투썸플레이스, 이디야, 영양정보">
+  <meta name="keywords" content="카페, 음료, 디저트, 당류, 당분, 건강, 스타벅스, 투썸플레이스, 이디야, 영양정보, 제로슈가, 저당">
   
   <!-- Open Graph -->
   <meta property="og:title" content="달당 - 카페 음료 & 디저트 당류 비교">
-  <meta property="og:description" content="카페 음료와 디저트의 당류를 한눈에 비교하세요">
+  <meta property="og:description" content="카페 음료와 디저트의 당류를 각설탕으로 한눈에 비교하세요">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://im-mini.github.io/daldang">
   
@@ -18,74 +18,136 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- 광고 공간 (PC 좌측) -->
+  <div class="ad-sidebar ad-left" id="adLeft">
+    <div class="ad-placeholder">광고</div>
+  </div>
+
+  <!-- 광고 공간 (PC 우측) -->
+  <div class="ad-sidebar ad-right" id="adRight">
+    <div class="ad-placeholder">광고</div>
+  </div>
+
   <div class="container">
+    <!-- 헤더 -->
     <header class="header">
-      <div class="header-content">
-        <h1>🍬 달당</h1>
-        <p class="subtitle">카페 음료 & 디저트의 당류를 한눈에 비교하세요</p>
-      </div>
+      <h1 class="logo">🍬 달당</h1>
+      <p class="tagline">카페 메뉴의 당류를 각설탕으로 확인하세요</p>
     </header>
 
-    <div class="daily-limit-info">
-      💡 <strong>일일 권장 당류 섭취량: 50g</strong> (WHO 기준)
+    <!-- 메인 검색 섹션 -->
+    <div class="search-hero">
+      <div class="search-box-large">
+        <input
+          type="text"
+          id="mainSearch"
+          class="search-input-large"
+          placeholder="메뉴명을 검색하세요 (예: 카라멜 마키아또)"
+        />
+        <button class="search-btn-large">🔍</button>
+      </div>
+      <p class="search-hint">💡 일일 권장 당류 섭취량: <strong>50g (각설탕 약 12개)</strong></p>
     </div>
 
-    <div class="filters">
-      <div class="filter-group">
-        <label class="filter-label">브랜드</label>
-        <div class="filter-buttons" id="brandFilters"></div>
+    <!-- 필터 (검색 전에만 표시) -->
+    <div class="filters" id="filters">
+      <div class="filter-row">
+        <div class="filter-group">
+          <label class="filter-label">브랜드</label>
+          <div class="filter-buttons" id="brandFilters"></div>
+        </div>
       </div>
-
-      <div class="filter-group">
-        <label class="filter-label">카테고리</label>
-        <div class="filter-buttons" id="categoryFilters"></div>
-      </div>
-
-      <div class="filter-group">
-        <label class="filter-label">정렬</label>
-        <div class="filter-buttons">
-          <button class="filter-btn active" data-sort="low">당류 낮은순</button>
-          <button class="filter-btn" data-sort="high">당류 높은순</button>
+      
+      <div class="filter-row">
+        <div class="filter-group">
+          <label class="filter-label">카테고리</label>
+          <div class="filter-buttons" id="categoryFilters"></div>
         </div>
       </div>
 
-      <div class="filter-group">
-        <label class="filter-label">검색</label>
-        <input
-          type="text"
-          class="search-box"
-          id="searchInput"
-          placeholder="제품명 또는 브랜드 검색..."
-        />
+      <div class="filter-row">
+        <div class="filter-group">
+          <label class="filter-label">정렬</label>
+          <select class="sort-select" id="sortSelect">
+            <option value="low">당류 낮은순</option>
+            <option value="high">당류 높은순</option>
+          </select>
+        </div>
       </div>
     </div>
 
-    <div class="products-grid" id="productsGrid"></div>
+    <!-- 광고 배너 (모바일 상단) -->
+    <div class="ad-banner mobile-ad">
+      <div class="ad-placeholder">배너 광고</div>
+    </div>
 
+    <!-- 제품 그리드 -->
+    <div class="products-section">
+      <div class="products-header">
+        <h2 class="section-title">메뉴 목록</h2>
+        <span class="result-count" id="resultCount">21개 메뉴</span>
+      </div>
+      
+      <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <!-- 광고 배너 (모바일 중간) -->
+    <div class="ad-banner mobile-ad">
+      <div class="ad-placeholder">배너 광고</div>
+    </div>
+
+    <!-- 비교 섹션 -->
     <div class="compare-section" id="compareSection">
       <div class="compare-header">
-        <h2 class="compare-title">📊 당류 비교</h2>
+        <h2 class="section-title">📊 비교 목록</h2>
         <span class="selected-count" id="selectedCount">0개 선택</span>
       </div>
       
-      <div class="compare-chart" id="compareChart">
-        <canvas id="chartCanvas"></canvas>
+      <div class="compare-table-wrapper" id="compareTableWrapper">
+        <table class="compare-table" id="compareTable">
+          <thead>
+            <tr>
+              <th>제품명</th>
+              <th>브랜드</th>
+              <th>당류</th>
+              <th>각설탕</th>
+              <th>태그</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="compareTableBody">
+          </tbody>
+        </table>
       </div>
 
       <div class="empty-state" id="emptyState">
-        <div class="empty-state-icon">📊</div>
-        <p>제품을 클릭하여 당류를 비교해보세요</p>
+        <div class="empty-icon">📊</div>
+        <p>제품을 선택하여 당류를 비교해보세요</p>
       </div>
     </div>
 
-    <footer style="text-align: center; margin-top: 4rem; padding: 2rem; color: var(--text-muted); font-size: 0.9rem;">
+    <!-- Footer -->
+    <footer class="footer">
       <p>🍬 <strong>달당 (Daldang)</strong> - 건강한 선택을 위한 당류 비교 서비스</p>
-      <p style="margin-top: 0.5rem; font-size: 0.8rem;">Made with ❤️ | <a href="https://github.com/im-mini/daldang" style="color: var(--primary); text-decoration: none;">GitHub</a></p>
+      <p class="footer-links">
+        <a href="https://github.com/im-mini/daldang">GitHub</a>
+      </p>
     </footer>
+  </div>
+
+  <!-- 플로팅 버튼들 -->
+  <div class="floating-buttons">
+    <button class="floating-btn" id="compareBtn" title="비교 목록 보기">
+      <span class="btn-icon">📊</span>
+      <span class="btn-badge" id="compareBadge">0</span>
+    </button>
+    <button class="floating-btn" id="topBtn" title="맨 위로">
+      <span class="btn-icon">🔝</span>
+    </button>
   </div>
 
   <script src="data.js"></script>
