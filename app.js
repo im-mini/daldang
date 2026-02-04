@@ -3,7 +3,7 @@ let filteredDrinks = []; // 검색/필터가 적용된 결과
 let displayCount = 20;   // 현재 화면에 보여줄 개수
 let compareCart = [];    // 비교함에 담긴 음료 (최대 3개)
 
-const brands = ['mega', 'starbucks', 'compose']; // 로드할 브랜드 리스트
+const brands = ['mega-coffee', 'starbucks', 'compose']; // 로드할 브랜드 리스트
 
 // 1. 초기 데이터 로드 및 캐싱
 async function initData() {
