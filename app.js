@@ -117,18 +117,45 @@ function renderDrinks() {
     const container = document.getElementById('drink-list');
     const nextBatch = filteredDrinks.slice(displayCount - 20, displayCount);
     
-    const html = nextBatch.map(drink => {
+    const html = nextBatch.map((drink, index) => { // index 추가
         const isSelected = compareCart.some(item => item.id === drink.id);
-        return `
+        
+        // 🧊 각설탕 시각화 (3g당 1개)
+        const sugarCubes = drink.sugar > 0 ? "🧊".repeat(Math.floor(drink.sugar / 3)) : "✅ 당류 없음";
+        
+        // 🧪 제로 음료 감미료 태그
+        const sweetenerTag = drink.sugar <= 0 
+            ? `<span class="tag-sweetener" style="background:#27ae60; color:white; padding:2px 6px; border-radius:4px; font-size:12px;">${drink.sweetener || '감미료 확인불가'}</span>` 
+            : '';
+
+        // 일반 음료 카드 HTML
+        const drinkCard = `
             <div class="card ${isSelected ? 'selected' : ''}" onclick="toggleCompare('${drink.id}')">
                 <div class="brand-tag">${drink.brand}</div>
                 <h3>${drink.name}</h3>
-                <p>당류: <strong>${drink.sugar}g</strong></p>
+                <p>당류: <strong>${drink.sugar}g</strong> ${sweetenerTag}</p>
+                <div class="sugar-cube-area" style="font-size: 1.2rem; margin-bottom: 8px;">${sugarCubes}</div>
                 <div class="sugar-bar-bg">
                     <div class="sugar-bar-fill" style="width: ${Math.min(drink.sugar * 1.5, 100)}%"></div>
                 </div>
             </div>
         `;
+
+        // 💰 수익화: 8번째 카드마다 광고 삽입
+        // 현재 인덱스가 7, 15, 23... 일 때 광고 카드를 앞에 붙여줌
+        if (index > 0 && (index + 1) % 8 === 0) {
+            const adCard = `
+                <div class="card ad-card" style="background: #fff5f6; border: 1px dashed var(--main-color); display: flex; align-items: center; justify-content: center; text-align: center;">
+                    <div>
+                        <span style="font-size: 0.8rem; color: var(--main-color); font-weight: bold;">AD</span>
+                        <p style="margin: 5px 0; font-weight: bold;">🍫 저당 간식 큐레이션<br>혈당 걱정 없는 디저트 보기</p>
+                    </div>
+                </div>
+            `;
+            return adCard + drinkCard;
+        }
+
+        return drinkCard;
     }).join('');
     
     container.insertAdjacentHTML('beforeend', html);
