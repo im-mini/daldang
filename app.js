@@ -1,204 +1,473 @@
-localStorage.clear(); // 이 줄을 추가하고 새로고침!
+// 상태 관리
+const state = {
+  metadata: [], // 경량 메타데이터 (검색용: name, brand, sweetener, tags만)
+  fullDataCache: {}, // 전체 데이터 캐시 (표시용: id를 키로)
+  displayedMenus: [],
+  filteredIds: [], // 필터링된 메뉴 ID 목록
+  selectedBrand: '전체',
+  sortBy: 'low',
+  searchTerm: '',
+  compareList: [],
+  currentPage: 0,
+  itemsPerPage: 12,
+  isLoading: false,
+  bannerIndex: 0
+};
 
-let allDrinks = [];      // 전체 브랜드 통합 데이터
-let filteredDrinks = []; // 검색/필터가 적용된 결과
-let displayCount = 20;   // 현재 화면에 보여줄 개수
-let compareCart = [];    // 비교함에 담긴 음료 (최대 3개)
-
-const brands = ['mega-coffee', 'starbucks', 'compose']; // 로드할 브랜드 리스트
-
-// 1. 초기 데이터 로드 및 캐싱
-async function initData() {
-    const cached = localStorage.getItem('all-drinks-cache');
+// 메타데이터 로드 (빠른 검색용)
+async function loadMetadata() {
+  try {
+    const [starbucks, mega] = await Promise.all([
+      fetch('data/starbucks.json').then(r => r.json()),
+      fetch('data/mega-coffee.json').then(r => r.json())
+    ]);
     
-    if (cached) {
-        allDrinks = JSON.parse(cached);
-        filteredDrinks = [...allDrinks];
-        renderInitialData();
-    } else {
-        try {
-            // 모든 브랜드 JSON을 동시에 가져오기
-            const promises = brands.map(b => fetch(`./data/${b}.json`).then(res => res.json()));
-            const results = await Promise.all(promises);
-            allDrinks = results.flat();
-            
-            localStorage.setItem('all-drinks-cache', JSON.stringify(allDrinks));
-            filteredDrinks = [...allDrinks];
-            renderInitialData();
-        } catch (error) {
-            console.error("데이터 로드 실패:", error);
-            alert("데이터를 불러오는 데 실패했습니다.");
-        }
-    }
+    const allData = [...starbucks, ...mega];
+    
+    // 검색용 메타데이터만 추출 (경량화)
+    state.metadata = allData.map(menu => ({
+      id: menu.id,
+      name: menu.name,
+      brand: menu.brand,
+      sweetener: menu.sweetener || [],
+      tags: menu.tags || [],
+      sugar: menu.sugar, // 정렬용
+      등록일: menu.등록일 // 신상품 정렬용
+    }));
+    
+    // 전체 데이터는 캐시에 저장 (표시용)
+    allData.forEach(menu => {
+      state.fullDataCache[menu.id] = menu;
+    });
+    
+    console.log(`✅ 메타데이터 ${state.metadata.length}개 로드 완료`);
+    console.log(`📦 전체 데이터 캐시 준비 완료`);
+    
+    applyFilters();
+    renderBrandFilter();
+    loadMoreItems();
+  } catch (error) {
+    console.error('데이터 로드 실패:', error);
+  }
 }
 
-// 2. 브랜드 필터링
-function filterByBrand(brandName) {
-    if (brandName === 'all') {
-        filteredDrinks = [...allDrinks];
-    } else {
-        filteredDrinks = allDrinks.filter(d => d.brand === brandName);
-    }
-    renderInitialData();
+// 브랜드 필터 렌더링
+function renderBrandFilter() {
+  const brands = ['전체', ...new Set(state.metadata.map(m => m.brand))];
+  const container = document.getElementById('brandFilter');
+  
+  container.innerHTML = brands.map(brand => `
+    <button class="brand-btn ${state.selectedBrand === brand ? 'active' : ''}" 
+            onclick="selectBrand('${brand}')">
+      ${brand}
+    </button>
+  `).join('');
 }
 
-// 3. 검색 핸들러
-function handleSearch(e) {
-    const keyword = e.target.value.toLowerCase();
-    filteredDrinks = allDrinks.filter(drink => 
-        drink.name.toLowerCase().includes(keyword) || 
-        drink.brand.includes(keyword) ||
-        (drink.tags && drink.tags.some(tag => tag.includes(keyword)))
+// 브랜드 선택
+function selectBrand(brand) {
+  state.selectedBrand = brand;
+  state.currentPage = 0;
+  state.displayedMenus = [];
+  applyFilters();
+  renderBrandFilter();
+  document.getElementById('menuGrid').innerHTML = '';
+  loadMoreItems();
+}
+
+// 정렬 변경
+function changeSort(sortType) {
+  state.sortBy = sortType;
+  state.currentPage = 0;
+  state.displayedMenus = [];
+  document.getElementById('menuGrid').innerHTML = '';
+  
+  document.querySelectorAll('.sort-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.sort === sortType) {
+      btn.classList.add('active');
+    }
+  });
+  
+  applyFilters();
+  loadMoreItems();
+}
+
+// 검색 (메타데이터에서만 검색)
+function handleSearch() {
+  const searchInput = document.getElementById('searchInput');
+  state.searchTerm = searchInput.value.trim();
+  state.currentPage = 0;
+  state.displayedMenus = [];
+  document.getElementById('menuGrid').innerHTML = '';
+  applyFilters();
+  loadMoreItems();
+}
+
+// 필터 및 정렬 적용 (메타데이터 기반)
+function applyFilters() {
+  let filtered = [...state.metadata];
+  
+  // 브랜드 필터
+  if (state.selectedBrand !== '전체') {
+    filtered = filtered.filter(m => m.brand === state.selectedBrand);
+  }
+  
+  // 검색 필터 (메타데이터의 name, brand, sweetener, tags에서 검색)
+  if (state.searchTerm) {
+    const term = state.searchTerm.toLowerCase();
+    filtered = filtered.filter(m => 
+      m.name.toLowerCase().includes(term) ||
+      m.brand.toLowerCase().includes(term) ||
+      m.tags.some(tag => tag.toLowerCase().includes(term)) ||
+      m.sweetener.some(sw => sw.toLowerCase().includes(term))
     );
-    renderInitialData();
+  }
+  
+  // 정렬
+  if (state.sortBy === 'low') {
+    filtered.sort((a, b) => a.sugar - b.sugar);
+  } else if (state.sortBy === 'high') {
+    filtered.sort((a, b) => b.sugar - a.sugar);
+  } else if (state.sortBy === 'new') {
+    // 신상품 태그 우선, 그 다음 등록일순
+    filtered.sort((a, b) => {
+      const aIsNew = a.tags.includes('신상품') || a.tags.includes('new') || a.tags.includes('NEW');
+      const bIsNew = b.tags.includes('신상품') || b.tags.includes('new') || b.tags.includes('NEW');
+      
+      if (aIsNew && !bIsNew) return -1;
+      if (!aIsNew && bIsNew) return 1;
+      
+      return new Date(b.등록일) - new Date(a.등록일);
+    });
+  }
+  
+  // 필터링된 ID 목록만 저장
+  state.filteredIds = filtered.map(m => m.id);
+  updateResultCount();
 }
 
-// 4. 정렬 기능
-function handleSort(criteria) {
-    if (criteria === 'lowSugar') {
-        filteredDrinks.sort((a, b) => a.sugar - b.sugar);
-    } else if (criteria === 'highSugar') {
-        filteredDrinks.sort((a, b) => b.sugar - a.sugar);
-    } else if (criteria === 'name') {
-        filteredDrinks.sort((a, b) => a.name.localeCompare(b.name));
+// 결과 수 업데이트
+function updateResultCount() {
+  document.getElementById('resultCount').textContent = state.filteredIds.length;
+}
+
+// 무한 스크롤 - 더 많은 아이템 로드
+function loadMoreItems() {
+  if (state.isLoading) return;
+  
+  state.isLoading = true;
+  document.getElementById('loading').style.display = 'block';
+  
+  setTimeout(() => {
+    const start = state.currentPage * state.itemsPerPage;
+    const end = start + state.itemsPerPage;
+    const newIds = state.filteredIds.slice(start, end);
+    
+    // 캐시에서 전체 데이터 가져오기
+    const newMenus = newIds.map(id => state.fullDataCache[id]);
+    
+    state.displayedMenus.push(...newMenus);
+    renderMenus(newMenus);
+    
+    state.currentPage++;
+    state.isLoading = false;
+    document.getElementById('loading').style.display = 'none';
+  }, 300);
+}
+
+// 각설탕 개수 계산
+function getSugarCubes(sugar) {
+  return Math.ceil(sugar / 4);
+}
+
+// 각설탕 렌더링
+function renderSugarCubes(sugar) {
+  const count = getSugarCubes(sugar);
+  const maxDisplay = 20;
+  
+  if (count === 0) return '<span class="sugar-text">당류 없음</span>';
+  
+  let html = '';
+  for (let i = 0; i < Math.min(count, maxDisplay); i++) {
+    html += '<span class="cube">🧊</span>';
+  }
+  
+  if (count > maxDisplay) {
+    html += ` <span class="sugar-text">+${count - maxDisplay}개</span>`;
+  }
+  
+  return html;
+}
+
+// 텍스트 하이라이트
+function highlightText(text) {
+  if (!state.searchTerm) return text;
+  
+  const regex = new RegExp(`(${state.searchTerm})`, 'gi');
+  return text.replace(regex, '<span class="highlight">$1</span>');
+}
+
+// 메뉴 카드 렌더링
+function renderMenus(menus) {
+  const grid = document.getElementById('menuGrid');
+  
+  menus.forEach((menu, index) => {
+    // 8번째마다 광고 삽입
+    if ((state.displayedMenus.indexOf(menu) + 1) % 8 === 0) {
+      const adCard = createAdCard();
+      grid.appendChild(adCard);
     }
-    renderInitialData();
+    
+    const card = createMenuCard(menu);
+    grid.appendChild(card);
+  });
 }
 
-// 5. 비교함 담기 로직
-function toggleCompare(id) {
-    const drink = allDrinks.find(d => d.id === id);
-    const index = compareCart.findIndex(item => item.id === id);
+// 광고 카드 생성
+function createAdCard() {
+  const div = document.createElement('div');
+  div.className = 'ad-card';
+  div.onclick = () => {
+    // 광고 클릭 시 이동할 URL
+    window.open('https://example.com/ad', '_blank');
+  };
+  
+  div.innerHTML = `
+    <h3>🎁 특별 제휴 혜택</h3>
+    <p>저당 간식 30% 할인</p>
+    <small style="color: var(--text-muted); margin-top: 0.5rem;">AD</small>
+  `;
+  
+  return div;
+}
 
-    if (index > -1) {
-        compareCart.splice(index, 1);
-    } else {
-        if (compareCart.length >= 3) {
-            alert("비교는 최대 3개까지만 가능합니다!");
-            return;
-        }
-        compareCart.push(drink);
+// 메뉴 카드 생성
+function createMenuCard(menu) {
+  const div = document.createElement('div');
+  div.className = 'menu-card';
+  
+  const isSelected = state.compareList.some(m => m.id === menu.id);
+  if (isSelected) div.classList.add('selected');
+  
+  const cubes = renderSugarCubes(menu.sugar);
+  const cubeCount = getSugarCubes(menu.sugar);
+  
+  // 태그 렌더링
+  const tagsHtml = menu.tags.map(tag => {
+    const highlighted = highlightText(tag);
+    let className = 'tag';
+    if (tag.includes('신상품') || tag.includes('new') || tag.includes('NEW')) {
+      className += ' new';
     }
-    updateCompareUI();
-    
-    // 선택 상태 시각화를 위해 현재 렌더링된 카드들만 업데이트
-    renderInitialData(); 
-}
-
-// 6. 비교함 UI 업데이트
-function updateCompareUI() {
-    const cartContainer = document.getElementById('compare-cart-ui');
-    const btnArea = document.getElementById('battle-btn-area');
-
-    if (compareCart.length === 0) {
-        cartContainer.innerHTML = '<span>음료를 선택하여 당류를 비교해보세요</span>';
-        btnArea.innerHTML = '';
-        return;
+    if (tag.includes('제로')) {
+      className += ' zero';
     }
-
-    cartContainer.innerHTML = compareCart.map(item => `
-        <div class="compare-chip">
-            ${item.brand.substring(0,1)} | ${item.name}
-            <span onclick="event.stopPropagation(); toggleCompare('${item.id}')" style="cursor:pointer; margin-left:5px;">✕</span>
-        </div>
-    `).join('');
-
-    btnArea.innerHTML = `<button class="battle-btn" onclick="openCompareModal()">배틀 시작!</button>`;
+    return `<span class="${className}">${highlighted}</span>`;
+  }).join('');
+  
+  // 감미료(sweetener) 표시
+  const sweetenerHtml = menu.sweetener && menu.sweetener.length > 0
+    ? menu.sweetener.map(s => `<span class="tag">${highlightText(s)}</span>`).join('')
+    : '';
+  
+  div.innerHTML = `
+    <div class="card-header">
+      <span class="brand-tag">${highlightText(menu.brand)}</span>
+    </div>
+    <h3 class="menu-name">${highlightText(menu.name)}</h3>
+    <div class="tags">
+      ${tagsHtml}
+      ${sweetenerHtml}
+    </div>
+    <div class="sugar-info">
+      <div class="sugar-amount">${menu.sugar}g</div>
+      <div class="sugar-cubes">${cubes}</div>
+      ${menu.sugar > 0 ? `<div class="sugar-text">각설탕 약 ${cubeCount}개</div>` : ''}
+      <div class="calorie-info">칼로리: ${menu.칼로리}kcal</div>
+    </div>
+    <button class="compare-add-btn ${isSelected ? 'selected' : ''}" onclick="toggleCompare('${menu.id}')">
+      ${isSelected ? '✓ 비교 목록에 담김' : '+ 비교 담기'}
+    </button>
+  `;
+  
+  return div;
 }
 
-// 7. 렌더링 엔진
-function renderInitialData() {
-    displayCount = 20;
-    document.getElementById('drink-list').innerHTML = '';
-    renderDrinks();
+// 비교 목록 토글
+function toggleCompare(menuId) {
+  const menu = state.fullDataCache[menuId];
+  const index = state.compareList.findIndex(m => m.id === menuId);
+  
+  if (index > -1) {
+    state.compareList.splice(index, 1);
+  } else {
+    state.compareList.push(menu);
+  }
+  
+  updateCompareBadge();
+  rerenderMenuCards();
+  renderCompareList();
 }
 
-function renderDrinks() {
-    const container = document.getElementById('drink-list');
-    const nextBatch = filteredDrinks.slice(displayCount - 20, displayCount);
-    
-    const html = nextBatch.map((drink, index) => { // index 추가
-        const isSelected = compareCart.some(item => item.id === drink.id);
-        
-        // 🧊 각설탕 시각화 (3g당 1개)
-        const sugarCubes = drink.sugar > 0 ? "🧊".repeat(Math.floor(drink.sugar / 3)) : "✅ 당류 없음";
-        
-        // 🧪 제로 음료 감미료 태그
-        const sweetenerTag = drink.sugar <= 0 
-            ? `<span class="tag-sweetener" style="background:#27ae60; color:white; padding:2px 6px; border-radius:4px; font-size:12px;">${drink.sweetener || '감미료 확인불가'}</span>` 
-            : '';
-
-        // 일반 음료 카드 HTML
-        const drinkCard = `
-            <div class="card ${isSelected ? 'selected' : ''}" onclick="toggleCompare('${drink.id}')">
-                <div class="brand-tag">${drink.brand}</div>
-                <h3>${drink.name}</h3>
-                <p>당류: <strong>${drink.sugar}g</strong> ${sweetenerTag}</p>
-                <div class="sugar-cube-area" style="font-size: 1.2rem; margin-bottom: 8px;">${sugarCubes}</div>
-                <div class="sugar-bar-bg">
-                    <div class="sugar-bar-fill" style="width: ${Math.min(drink.sugar * 1.5, 100)}%"></div>
-                </div>
-            </div>
-        `;
-
-        // 💰 수익화: 8번째 카드마다 광고 삽입
-        // 현재 인덱스가 7, 15, 23... 일 때 광고 카드를 앞에 붙여줌
-        if (index > 0 && (index + 1) % 8 === 0) {
-            const adCard = `
-                <div class="card ad-card" style="background: #fff5f6; border: 1px dashed var(--main-color); display: flex; align-items: center; justify-content: center; text-align: center;">
-                    <div>
-                        <span style="font-size: 0.8rem; color: var(--main-color); font-weight: bold;">AD</span>
-                        <p style="margin: 5px 0; font-weight: bold;">🍫 저당 간식 큐레이션<br>혈당 걱정 없는 디저트 보기</p>
-                    </div>
-                </div>
-            `;
-            return adCard + drinkCard;
-        }
-
-        return drinkCard;
-    }).join('');
-    
-    container.insertAdjacentHTML('beforeend', html);
+// 비교 목록 제거
+function removeFromCompare(menuId) {
+  state.compareList = state.compareList.filter(m => m.id !== menuId);
+  updateCompareBadge();
+  rerenderMenuCards();
+  renderCompareList();
 }
 
-// 8. 모달 제어
-function openCompareModal() {
-    const modal = document.getElementById('compare-modal');
-    const overlay = document.getElementById('modal-overlay');
-    const content = document.getElementById('modal-content');
-    
-    const sortedBattle = [...compareCart].sort((a, b) => b.sugar - a.sugar);
-    
-    content.innerHTML = sortedBattle.map((item, index) => `
-        <div style="margin-bottom: 20px;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                <span><strong>${index + 1}위</strong> ${item.brand} ${item.name}</span>
-                <span>${item.sugar}g</span>
-            </div>
-            <div style="background:#eee; height:15px; border-radius:10px; overflow:hidden;">
-                <div style="background:${index === 0 ? '#ff4757' : '#ffa502'}; width:${Math.min(item.sugar * 1.5, 100)}%; height:100%;"></div>
-            </div>
-        </div>
-    `).join('');
-
-    modal.style.display = 'block';
-    overlay.style.display = 'block';
+// 메뉴 카드 다시 렌더링
+function rerenderMenuCards() {
+  document.getElementById('menuGrid').innerHTML = '';
+  renderMenus(state.displayedMenus);
 }
 
-function closeModal() {
-    document.getElementById('compare-modal').style.display = 'none';
-    document.getElementById('modal-overlay').style.display = 'none';
+// 비교 배지 업데이트
+function updateCompareBadge() {
+  const badge = document.getElementById('compareBadge');
+  badge.textContent = state.compareList.length;
+  
+  if (state.compareList.length > 0) {
+    badge.classList.add('active');
+  } else {
+    badge.classList.remove('active');
+  }
 }
 
-// 9. 무한 스크롤 관찰자
-const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && displayCount < filteredDrinks.length) {
-        displayCount += 20;
-        renderDrinks();
+// 비교 모달 토글
+function toggleCompareModal() {
+  const modal = document.getElementById('compareModal');
+  modal.classList.toggle('active');
+  
+  if (modal.classList.contains('active')) {
+    renderCompareList();
+  }
+}
+
+// 비교 목록 렌더링
+function renderCompareList() {
+  const container = document.getElementById('compareList');
+  const empty = document.getElementById('emptyCompare');
+  
+  if (state.compareList.length === 0) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  
+  empty.style.display = 'none';
+  
+  const tableHtml = `
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>메뉴명</th>
+          <th>브랜드</th>
+          <th>당류</th>
+          <th>각설탕</th>
+          <th>칼로리</th>
+          <th>감미료</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${state.compareList.map(menu => {
+          const cubeCount = getSugarCubes(menu.sugar);
+          const sweetenerText = menu.sweetener && menu.sweetener.length > 0 
+            ? menu.sweetener.join(', ') 
+            : '-';
+          
+          return `
+            <tr>
+              <td><strong>${menu.name}</strong></td>
+              <td>${menu.brand}</td>
+              <td><strong style="color: var(--primary-dark); font-size: 1.2rem;">${menu.sugar}g</strong></td>
+              <td>${menu.sugar === 0 ? '-' : `🧊 약 ${cubeCount}개`}</td>
+              <td>${menu.칼로리}kcal</td>
+              <td><small>${sweetenerText}</small></td>
+              <td>
+                <button class="remove-btn" onclick="removeFromCompare('${menu.id}')">
+                  제거
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+  
+  container.innerHTML = tableHtml;
+}
+
+// 맨 위로 스크롤
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 배너 슬라이드 변경
+function changeBanner(direction) {
+  const slides = document.querySelectorAll('.banner-slide');
+  slides[state.bannerIndex].classList.remove('active');
+  
+  state.bannerIndex += direction;
+  if (state.bannerIndex < 0) state.bannerIndex = slides.length - 1;
+  if (state.bannerIndex >= slides.length) state.bannerIndex = 0;
+  
+  slides[state.bannerIndex].classList.add('active');
+}
+
+// 스크롤 이벤트
+function handleScroll() {
+  // Top 버튼 표시/숨김
+  const topBtn = document.getElementById('topBtn');
+  if (window.scrollY > 300) {
+    topBtn.classList.add('visible');
+  } else {
+    topBtn.classList.remove('visible');
+  }
+  
+  // 무한 스크롤
+  const scrollHeight = document.documentElement.scrollHeight;
+  const scrollTop = window.scrollY;
+  const clientHeight = window.innerHeight;
+  
+  if (scrollTop + clientHeight >= scrollHeight - 500) {
+    if (state.displayedMenus.length < state.filteredIds.length) {
+      loadMoreItems();
     }
-}, { threshold: 0.1 });
+  }
+}
 
-observer.observe(document.getElementById('sentinel'));
+// 이벤트 리스너 설정
+function setupEventListeners() {
+  // 검색
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', handleSearch);
+  
+  // 정렬 버튼
+  document.querySelectorAll('.sort-btn').forEach(btn => {
+    btn.addEventListener('click', () => changeSort(btn.dataset.sort));
+  });
+  
+  // 스크롤
+  window.addEventListener('scroll', handleScroll);
+  
+  // 모달 외부 클릭 시 닫기
+  document.getElementById('compareModal').addEventListener('click', (e) => {
+    if (e.target.id === 'compareModal') {
+      toggleCompareModal();
+    }
+  });
+  
+  // 배너 자동 슬라이드
+  setInterval(() => changeBanner(1), 5000);
+}
 
-// 실행
-initData();
+// 초기화
+document.addEventListener('DOMContentLoaded', () => {
+  loadMetadata();
+  setupEventListeners();
+});
