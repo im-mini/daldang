@@ -1,3 +1,5 @@
+localStorage.clear(); // 이 줄을 추가하고 새로고침!
+
 let allDrinks = [];      // 전체 브랜드 통합 데이터
 let filteredDrinks = []; // 검색/필터가 적용된 결과
 let displayCount = 20;   // 현재 화면에 보여줄 개수
