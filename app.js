@@ -1,129 +1,145 @@
-// 1. 초기 데이터 렌더링 및 상태 관리
-let filteredDrinks = [...drinkData];
-let compareBasket = [];
+let allDrinks = [];      
+let filteredDrinks = []; 
+let displayCount = 20;   
+let compareCart = [];    // 비교함 장바구니
 
-const drinkGrid = document.getElementById('drinkGrid');
-const totalCountEl = document.getElementById('totalCount');
-const searchInput = document.getElementById('searchInput');
-const sortSelect = document.getElementById('sortSelect');
-const compareBar = document.getElementById('compareStickyBar');
-const compareCountEl = document.getElementById('compareSelectedCount');
+const brands = ['mega', 'starbucks', 'compose']; 
 
-// 2. 음료 카드 렌더링 함수
-function renderDrinks(data) {
-    drinkGrid.innerHTML = '';
-    totalCountEl.textContent = data.length;
-
-    data.forEach(drink => {
-        // 각설탕 개수 계산 (5g당 1개)
-        const cubeCount = Math.floor(drink.sugar / 5);
-        const cubes = drink.sugar > 0 ? "🧊".repeat(cubeCount || 1) : "Clean ✨";
-        
-        // 비교하기 버튼 활성화 여부
-        const isSelected = compareBasket.find(item => item.id === drink.id);
-
-        const card = document.createElement('div');
-        card.className = 'drink-card';
-        card.innerHTML = `
-            <div class="card-header">
-                <span class="brand">${drink.brand}</span>
-                <span class="badge ${drink.sweetenerType}">${drink.sweetenerName}</span>
-            </div>
-            <h3>${drink.name}</h3>
-            <div class="sugar-info">${drink.sugar}g</div>
-            <div class="sugar-cubes">${cubes}</div>
-            <div class="tags">${drink.tags.map(tag => `<span>#${tag}</span>`).join(' ')}</div>
-            <button class="btn-compare ${isSelected ? 'active' : ''}" 
-                    onclick="toggleCompare(${drink.id})">
-                ${isSelected ? '선택됨' : '비교담기'}
-            </button>
-        `;
-        drinkGrid.appendChild(card);
-    });
-}
-
-// 3. 검색 로직
-function handleSearch() {
-    const keyword = searchInput.value.toLowerCase();
-    filteredDrinks = drinkData.filter(drink => 
-        drink.name.toLowerCase().includes(keyword) || 
-        drink.brand.toLowerCase().includes(keyword)
-    );
-    handleSort(); // 검색 후 현재 정렬 상태 유지
-}
-
-// 4. 정렬 로직
-function handleSort() {
-    const sortValue = sortSelect.value;
-    
-    if (sortValue === 'sugar-asc') {
-        filteredDrinks.sort((a, b) => a.sugar - b.sugar);
-    } else if (sortValue === 'sugar-desc') {
-        filteredDrinks.sort((a, b) => b.sugar - a.sugar);
+// 1. 초기 로드 및 캐싱 (동일)
+async function initData() {
+    const cached = localStorage.getItem('all-drinks-cache');
+    if (cached) {
+        allDrinks = JSON.parse(cached);
+        filteredDrinks = [...allDrinks];
+        renderInitialData();
     } else {
-        filteredDrinks.sort((a, b) => b.id.localeCompare(a.id));
+        try {
+            const promises = brands.map(b => fetch(`./data/${b}.json`).then(res => res.json()));
+            const results = await Promise.all(promises);
+            allDrinks = results.flat();
+            localStorage.setItem('all-drinks-cache', JSON.stringify(allDrinks));
+            filteredDrinks = [...allDrinks];
+            renderInitialData();
+        } catch (error) {
+            console.error("데이터 로드 실패:", error);
+        }
     }
-    renderDrinks(filteredDrinks);
 }
 
-// 5. 비교하기 담기 로직
+// 2. 비교함 담기/제거 함수
 function toggleCompare(id) {
-    const drink = drinkData.find(d => d.id === id);
-    const index = compareBasket.findIndex(item => item.id === id);
+    const drink = allDrinks.find(d => d.id === id);
+    const index = compareCart.findIndex(item => item.id === id);
 
     if (index > -1) {
-        compareBasket.splice(index, 1);
+        compareCart.splice(index, 1); // 이미 있으면 제거
     } else {
-        if (compareBasket.length >= 3) {
-            alert('비교는 최대 3개까지만 가능합니다!');
+        if (compareCart.length >= 3) {
+            alert("비교는 최대 3개까지만 가능합니다!");
             return;
         }
-        compareBasket.push(drink);
+        compareCart.push(drink); // 없으면 추가
     }
-    updateCompareBar();
-    renderDrinks(filteredDrinks); // 버튼 상태 업데이트를 위해 재렌더링
+    updateCompareUI();
+    renderDrinks(); // 카드 선택 상태 표시를 위해 재렌더링
 }
 
-// 6. 하단 고정 비교 바 업데이트
-function updateCompareBar() {
-    if (compareBasket.length > 0) {
-        compareBar.classList.remove('hidden');
-        compareCountEl.textContent = compareBasket.length;
-    } else {
-        compareBar.classList.add('hidden');
+// 3. 비교함 UI 업데이트
+function updateCompareUI() {
+    const cartEl = document.getElementById('compare-cart');
+    if (compareCart.length === 0) {
+        cartEl.innerHTML = '<p>비교할 음료를 선택하세요 (최대 3개)</p>';
+        return;
     }
+
+    cartEl.innerHTML = compareCart.map(item => `
+        <div class="compare-item">
+            <span>${item.name} (${item.sugar}g)</span>
+            <button onclick="toggleCompare('${item.id}')">❌</button>
+        </div>
+    `).join('') + `<button onclick="openCompareModal()" class="battle-btn">당류 배틀 시작!</button>`;
 }
 
-// 7. 비교 모달 열기
-function openCompareModal() {
-    const modal = document.getElementById('compareModal');
-    const head = document.getElementById('compareHead');
-    const body = document.getElementById('compareBody');
-
-    head.innerHTML = '<tr><th>정보</th>' + compareBasket.map(d => `<th>${d.name}</th>`).join('') + '</tr>';
+// 4. 렌더링 (카드에 클릭 이벤트 추가)
+function renderDrinks() {
+    const container = document.getElementById('drink-list');
+    const nextBatch = filteredDrinks.slice(displayCount - 20, displayCount);
     
-    body.innerHTML = `
-        <tr><td>브랜드</td>${compareBasket.map(d => `<td>${d.brand}</td>`).join('')}</tr>
-        <tr><td>당류</td>${compareBasket.map(d => `<td>${d.sugar}g</td>`).join('')}</tr>
-        <tr><td>감미료</td>${compareBasket.map(d => `<td><span class="badge ${d.sweetenerType}">${d.sweetenerName}</span></td>`).join('')}</tr>
-        <tr><td>사이즈</td>${compareBasket.map(d => `<td>${d.size}</td>`).join('')}</tr>
-    `;
-
-    modal.classList.remove('hidden');
+    const html = nextBatch.map(drink => {
+        const isSelected = compareCart.some(item => item.id === drink.id);
+        return `
+            <div class="card ${isSelected ? 'selected' : ''}" onclick="toggleCompare('${drink.id}')">
+                <div class="brand-tag">${drink.brand}</div>
+                <h3>${drink.name}</h3>
+                <p>당류: <strong>${drink.sugar}g</strong></p>
+                <div class="sugar-bar-bg">
+                    <div class="sugar-bar-fill" style="width: ${Math.min(drink.sugar * 2, 100)}%"></div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    container.insertAdjacentHTML('beforeend', html);
 }
 
-// 이벤트 리스너
-searchInput.addEventListener('input', handleSearch);
-sortSelect.addEventListener('change', handleSort);
-document.getElementById('compareOpenBtn').addEventListener('click', openCompareModal);
-document.querySelector('.close-modal').addEventListener('click', () => {
-    document.getElementById('compareModal').classList.add('hidden');
-});
-document.getElementById('compareResetBtn').addEventListener('click', () => {
-    compareBasket = [];
-    updateCompareBar();
-    renderDrinks(filteredDrinks);
-});
+// 3. 검색 기능 (브랜드 상관없이 전체 검색)
+function handleSearch(e) {
+    const keyword = e.target.value.toLowerCase();
+    filteredDrinks = allDrinks.filter(drink => 
+        drink.name.toLowerCase().includes(keyword) || 
+        drink.brand.includes(keyword) ||
+        drink.tags.some(tag => tag.includes(keyword))
+    );
+    renderInitialData();
+}
 
-// 초기 실행
-renderDrinks(drinkData);
+// 4. 정렬 기능 (기존 handleSort 유지 + 최적화)
+function handleSort(criteria) {
+    if (criteria === 'lowSugar') {
+        filteredDrinks.sort((a, b) => a.sugar - b.sugar);
+    } else if (criteria === 'highSugar') {
+        filteredDrinks.sort((a, b) => b.sugar - a.sugar);
+    } else if (criteria === 'name') {
+        filteredDrinks.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    renderInitialData();
+}
+
+// 5. 렌더링 엔진 (무한 스크롤 포함)
+function renderInitialData() {
+    displayCount = 20;
+    document.getElementById('drink-list').innerHTML = ''; // 기존 목록 비우기
+    renderDrinks();
+}
+
+function renderDrinks() {
+    const container = document.getElementById('drink-list');
+    const nextBatch = filteredDrinks.slice(displayCount - 20, displayCount);
+    
+    const html = nextBatch.map(drink => `
+        <div class="card ${drink.sugar > 50 ? 'danger' : ''}">
+            <div class="brand-tag">${drink.brand}</div>
+            <h3>${drink.name}</h3>
+            <div class="sugar-info">
+                <span>당류: ${drink.sugar}g</span>
+                <div class="sugar-bar" style="width: ${Math.min(drink.sugar * 2, 100)}%"></div>
+            </div>
+            <p class="tags">${drink.tags.map(t => `#${t}`).join(' ')}</p>
+        </div>
+    `).join('');
+    
+    container.insertAdjacentHTML('beforeend', html);
+}
+
+// 6. 무한 스크롤 감지 (Intersection Observer)
+const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && displayCount < filteredDrinks.length) {
+        displayCount += 20;
+        renderDrinks();
+    }
+}, { threshold: 1.0 });
+
+observer.observe(document.getElementById('sentinel'));
+
+// 실행
+initData();
