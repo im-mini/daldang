@@ -3,51 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>달당 | 카페 음료 당류 및 감미료 비교 검색 서비스</title>
-    <meta name="description" content="스타벅스, 메가커피 등 프랜차이즈 카페 음료의 당류 함량과 대체 감미료(스테비아, 말티톨)를 확인하고 죄책감 없이 즐기세요.">
-    <meta name="keywords" content="저당음료, 제로슈가, 카페당류비교, 혈당관리, 다이어트음료">
+    
+    <title>달당 | 카페 음료 당류 & 대체 감미료 비교 검색</title>
+    <meta name="description" content="스타벅스, 메가커피 등 주요 카페의 당류 함량을 각설탕으로 시각화하여 확인하세요. 말티톨, 스테비아 등 대체 감미료 정보까지 제공합니다.">
+    <meta name="keywords" content="저당음료, 제로슈가, 카페당류비교, 혈당관리, 다이어트음료, 말티톨체크, 달당">
     <link rel="canonical" href="https://im-mini.github.io/daldang/">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="달당 - 죄책감 없는 카페 선택">
+    <meta property="og:description" content="오늘 마실 음료의 당류와 감미료, 미리 확인하셨나요?">
+    <meta property="og:url" content="https://im-mini.github.io/daldang/">
+    <meta property="og:image" content="https://im-mini.github.io/daldang/og-image.png">
+
     <link rel="stylesheet" href="style.css">
-</head>
+    
+    </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo">달당 🧊</div>
-        </nav>
-    </header>
 
-    <main>
-        <section class="search-section">
-            <h1>오늘 마실 음료, 당류 확인하셨나요?</h1>
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="카페나 메뉴 이름을 검색해보세요">
-                <button id="searchBtn">검색</button>
+    <aside class="ad-side left-ad">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-################"
+             data-ad-slot="########"
+             data-ad-format="vertical"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+
+    <div class="container">
+        <header>
+            <div class="logo-area">
+                <a href="/daldang" class="logo">달당 🧊</a>
             </div>
-            <div class="quick-tags">
-                <span>#스테비아</span> <span>#제로에이드</span> <span>#말티톨체크</span>
-            </div>
-        </section>
+            <nav class="top-nav">
+                <span>로그인</span>
+                <span>메뉴제보</span>
+            </nav>
+        </header>
 
-        <section class="ad-slider" id="promoSlider">
-            <div class="ad-content">📢 저당 신제품 출시! 브랜드 협업 광고 영역</div>
-        </section>
+        <main>
+            <section class="search-hero">
+                <h1>마시기 전, 당(糖) 체크</h1>
+                <p>2030 여성을 위한 스마트한 저당 라이프</p>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="카페명 또는 메뉴를 입력하세요 (예: 스타벅스, 자허블)">
+                    <button id="searchBtn">🔍</button>
+                </div>
+                <div class="trending-tags">
+                    <span>#스테비아</span> <span>#제로에이드</span> <span>#저당라떼</span> <span>#말티톨프리</span>
+                </div>
+            </section>
 
-        <section class="list-controls">
-            <span id="resultCount">전체 0건</span>
-            <select id="sortOrder">
-                <option value="latest">최신순</option>
-                <option value="sugarLow">당류 낮은 순</option>
-                <option value="sugarHigh">당류 높은 순</option>
-            </select>
-        </section>
+            <section class="paid-promo" id="promoSlider">
+                <div class="promo-item">
+                    <img src="https://via.placeholder.com/800x200?text=Brand+Promotion+Banner" alt="브랜드 신제품 홍보">
+                    <div class="promo-text">
+                        <strong>[NEW] OO카페 제로 슈가 에이드 출시!</strong>
+                        <span>지금 바로 당류 0g의 달콤함을 만나보세요.</span>
+                    </div>
+                </div>
+            </section>
 
-        <div id="drinkList" class="drink-grid"></div>
-        
-        <div id="compareBar" class="hidden">
-            <span id="compareCount">0개 선택됨 (최대 3개)</span>
-            <button onclick="openCompareModal()">비교하기</button>
+            <section class="list-filter">
+                <div class="count-info">총 <span id="totalCount">0</span>개의 메뉴</div>
+                <div class="sort-options">
+                    <select id="sortSelect">
+                        <option value="latest">최신순</option>
+                        <option value="sugar-asc">당류 낮은순</option>
+                        <option value="sugar-desc">당류 높은순</option>
+                    </select>
+                </div>
+            </section>
+
+            <div id="drinkGrid" class="drink-grid">
+                </div>
+
+            <section class="ad-mid-mobile">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-format="fluid"
+                     data-ad-layout-key="-fb+5w+4e-db+86"
+                     data-ad-client="ca-pub-################"
+                     data-ad-slot="########"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 달당. All rights reserved. im-mini.github.io/daldang</p>
+        </footer>
+    </div>
+
+    <aside class="ad-side right-ad">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-################"
+             data-ad-slot="########"
+             data-ad-format="vertical"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+
+    <div id="compareStickyBar" class="compare-bar hidden">
+        <div class="compare-info">
+            <span id="compareSelectedCount">0</span>/3 선택됨
         </div>
-    </main>
+        <button id="compareOpenBtn" class="btn-primary">선택 메뉴 비교하기</button>
+        <button id="compareResetBtn" class="btn-text">초기화</button>
+    </div>
+
+    <div id="compareModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>음료 당류 비교 결과</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <table class="compare-table">
+                    <thead id="compareHead">
+                        </thead>
+                    <tbody id="compareBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <script src="data.js"></script>
     <script src="app.js"></script>
