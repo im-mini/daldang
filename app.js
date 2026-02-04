@@ -11,14 +11,59 @@ let state = {
 const brands = ['전체', ...new Set(products.map(p => p.brand))];
 const categories = ['전체', ...new Set(products.map(p => p.category))];
 
-// 당류별 이모티콘 반환
-function getSugarEmoji(sugar) {
-  if (sugar === 0) return '😍';
-  if (sugar <= 10) return '😍';
-  if (sugar <= 25) return '🙂';
-  if (sugar <= 40) return '😞';
-  if (sugar <= 60) return '🤪';
-  return '😱';
+// 각설탕 개수 계산 (각설탕 1개 = 약 4g)
+function getSugarCubes(sugar) {
+  return Math.ceil(sugar / 4);
+}
+
+// 각설탕 시각화 생성
+function renderSugarCubes(sugar) {
+  const cubeCount = getSugarCubes(sugar);
+  const maxDisplay = 20; // 최대 표시 개수
+  
+  if (cubeCount === 0) {
+    return '<span class="sugar-text">당류 없음</span>';
+  }
+  
+  let cubesHTML = '';
+  const displayCount = Math.min(cubeCount, maxDisplay);
+  
+  for (let i = 0; i < displayCount; i++) {
+    cubesHTML += '<span class="sugar-cube">🧊</span>';
+  }
+  
+  if (cubeCount > maxDisplay) {
+    cubesHTML += ` <span class="sugar-text">+${cubeCount - maxDisplay}개</span>`;
+  }
+  
+  return cubesHTML;
+}
+
+// 태그 렌더링
+function renderTags(product) {
+  if (product.tags.length === 0) return '';
+  
+  return product.tags.map(tag => {
+    let className = 'tag';
+    if (tag === '제로슈가' || tag === '제로') {
+      className += ' tag-zero';
+    } else if (tag.includes('에리스리톨') || tag.includes('스테비아') || tag.includes('알룰로스')) {
+      className += ' tag-sweetener';
+    } else {
+      className += ' tag-unknown';
+    }
+    return `<span class="${className}">${tag}</span>`;
+  }).join('');
+}
+
+// 감미료 정보 태그 생성
+function getSweetenerTag(product) {
+  if (product.sugar === 0 && product.sweetener) {
+    return `<span class="tag tag-sweetener">${product.sweetener}</span>`;
+  } else if (product.sugar === 0 && !product.sweetener && !product.tags.includes('제로슈가')) {
+    return `<span class="tag tag-unknown">감미료 확인불가</span>`;
+  }
+  return '';
 }
 
 // 필터 버튼 초기화
@@ -41,18 +86,16 @@ function initFilters() {
     </button>
   `).join('');
 
-  // 정렬 버튼
-  document.querySelectorAll('[data-sort]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      document.querySelectorAll('[data-sort]').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      state.sortBy = e.target.dataset.sort;
-      renderProducts();
-    });
+  // 정렬 셀렉트
+  const sortSelect = document.getElementById('sortSelect');
+  sortSelect.addEventListener('change', (e) => {
+    state.sortBy = e.target.value;
+    renderProducts();
   });
 
-  // 검색
-  document.getElementById('searchInput').addEventListener('input', (e) => {
+  // 메인 검색
+  const mainSearch = document.getElementById('mainSearch');
+  mainSearch.addEventListener('input', (e) => {
     state.searchTerm = e.target.value;
     renderProducts();
   });
@@ -106,7 +149,14 @@ function toggleProductSelection(productId) {
   }
   
   renderProducts();
-  renderCompareSection();
+  updateCompareSection();
+}
+
+// 선택 제품 제거
+function removeProduct(productId) {
+  state.selectedProducts = state.selectedProducts.filter(p => p.id !== productId);
+  renderProducts();
+  updateCompareSection();
 }
 
 // 필터링된 제품 목록 가져오기
@@ -123,12 +173,14 @@ function getFilteredProducts() {
     filtered = filtered.filter(p => state.selectedCategories.includes(p.category));
   }
 
-  // 검색어 필터
+  // 검색어 필터 (제품명, 브랜드, 태그 검색)
   if (state.searchTerm) {
     const searchLower = state.searchTerm.toLowerCase();
     filtered = filtered.filter(p => 
       p.name.toLowerCase().includes(searchLower) ||
-      p.brand.toLowerCase().includes(searchLower)
+      p.brand.toLowerCase().includes(searchLower) ||
+      p.tags.some(tag => tag.toLowerCase().includes(searchLower)) ||
+      (p.sweetener && p.sweetener.toLowerCase().includes(searchLower))
     );
   }
 
@@ -145,160 +197,136 @@ function getFilteredProducts() {
 // 제품 카드 렌더링
 function renderProducts() {
   const grid = document.getElementById('productsGrid');
+  const resultCount = document.getElementById('resultCount');
   const filtered = getFilteredProducts();
+
+  resultCount.textContent = `${filtered.length}개 메뉴`;
 
   grid.innerHTML = filtered.map(product => {
     const isSelected = state.selectedProducts.find(p => p.id === product.id);
+    const cubes = renderSugarCubes(product.sugar);
+    const cubeCount = getSugarCubes(product.sugar);
+    const tags = renderTags(product);
+    const sweetenerTag = getSweetenerTag(product);
+    
     return `
-      <div class="product-card ${isSelected ? 'selected' : ''}" 
-           onclick="toggleProductSelection(${product.id})">
+      <div class="product-card ${isSelected ? 'selected' : ''}">
         <div class="product-header">
           <span class="product-brand">${product.brand}</span>
-          <span class="sugar-emoji">${getSugarEmoji(product.sugar)}</span>
         </div>
         <h3 class="product-name">${product.name}</h3>
         <p class="product-category">${product.category} · ${product.size}</p>
-        <div class="sugar-info">
-          <span class="sugar-amount">${product.sugar}</span>
-          <span class="sugar-unit">g</span>
+        
+        <div class="product-tags">
+          ${tags}
+          ${sweetenerTag}
         </div>
-        <div class="sugar-bar">
-          <div class="sugar-bar-fill" style="width: ${Math.min((product.sugar / 100) * 100, 100)}%"></div>
+        
+        <div class="sugar-visual">
+          <div class="sugar-info-row">
+            <span class="sugar-amount">${product.sugar}</span>
+            <span class="sugar-unit">g</span>
+          </div>
+          <div class="sugar-cubes">
+            ${cubes}
+          </div>
+          ${product.sugar > 0 ? `<p class="sugar-text">각설탕 약 ${cubeCount}개</p>` : ''}
         </div>
+        
+        <button class="add-compare-btn ${isSelected ? 'selected' : ''}" 
+                onclick="toggleProductSelection(${product.id})">
+          ${isSelected ? '✓ 비교 목록에 담김' : '+ 비교 담기'}
+        </button>
       </div>
     `;
   }).join('');
 }
 
-// 비교 섹션 렌더링
-function renderCompareSection() {
+// 비교 섹션 업데이트
+function updateCompareSection() {
   const selectedCount = document.getElementById('selectedCount');
-  const compareChart = document.getElementById('compareChart');
+  const compareTableWrapper = document.getElementById('compareTableWrapper');
   const emptyState = document.getElementById('emptyState');
+  const compareBadge = document.getElementById('compareBadge');
   
   selectedCount.textContent = `${state.selectedProducts.length}개 선택`;
+  
+  // 배지 업데이트
+  if (state.selectedProducts.length > 0) {
+    compareBadge.textContent = state.selectedProducts.length;
+    compareBadge.classList.add('active');
+  } else {
+    compareBadge.classList.remove('active');
+  }
 
   if (state.selectedProducts.length === 0) {
-    compareChart.classList.remove('active');
+    compareTableWrapper.classList.remove('active');
     emptyState.classList.remove('hidden');
   } else {
-    compareChart.classList.add('active');
+    compareTableWrapper.classList.add('active');
     emptyState.classList.add('hidden');
-    drawChart();
+    renderCompareTable();
   }
 }
 
-// 차트 그리기
-function drawChart() {
-  const canvas = document.getElementById('chartCanvas');
-  const ctx = canvas.getContext('2d');
+// 비교 테이블 렌더링
+function renderCompareTable() {
+  const tbody = document.getElementById('compareTableBody');
   
-  // 캔버스 크기 설정
-  const container = canvas.parentElement;
-  canvas.width = container.offsetWidth;
-  canvas.height = 400;
+  tbody.innerHTML = state.selectedProducts.map(product => {
+    const cubeCount = getSugarCubes(product.sugar);
+    const tags = renderTags(product);
+    const sweetenerTag = getSweetenerTag(product);
+    
+    return `
+      <tr>
+        <td><strong>${product.name}</strong><br><small style="color: var(--text-muted);">${product.size}</small></td>
+        <td>${product.brand}</td>
+        <td><span class="sugar-value">${product.sugar}g</span></td>
+        <td>
+          ${product.sugar === 0 ? '-' : `🧊 약 ${cubeCount}개`}
+        </td>
+        <td>
+          ${tags}
+          ${sweetenerTag}
+        </td>
+        <td>
+          <button class="remove-btn" onclick="removeProduct(${product.id})">
+            제거
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
 
-  const products = state.selectedProducts;
-  const padding = 60;
-  const chartWidth = canvas.width - padding * 2;
-  const chartHeight = canvas.height - padding * 2;
+// 플로팅 버튼 기능
+function initFloatingButtons() {
+  const topBtn = document.getElementById('topBtn');
+  const compareBtn = document.getElementById('compareBtn');
   
-  // 배경 클리어
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  if (products.length === 0) return;
-
-  // 최대값 계산
-  const maxSugar = Math.max(...products.map(p => p.sugar), 50);
-  const barWidth = chartWidth / products.length;
-  
-  // Y축 그리기
-  ctx.strokeStyle = '#334155';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(padding, padding);
-  ctx.lineTo(padding, padding + chartHeight);
-  ctx.lineTo(padding + chartWidth, padding + chartHeight);
-  ctx.stroke();
-
-  // 일일 권장량 선 그리기
-  const recommendY = padding + chartHeight - (50 / maxSugar * chartHeight);
-  ctx.strokeStyle = '#EF4444';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([5, 5]);
-  ctx.beginPath();
-  ctx.moveTo(padding, recommendY);
-  ctx.lineTo(padding + chartWidth, recommendY);
-  ctx.stroke();
-  ctx.setLineDash([]);
-
-  // 권장량 텍스트
-  ctx.fillStyle = '#EF4444';
-  ctx.font = '12px Outfit';
-  ctx.fillText('일일 권장량 (50g)', padding + chartWidth - 120, recommendY - 5);
-
-  // 막대 그리기
-  products.forEach((product, index) => {
-    const barHeight = (product.sugar / maxSugar) * chartHeight;
-    const x = padding + (index * barWidth) + barWidth * 0.1;
-    const y = padding + chartHeight - barHeight;
-    const width = barWidth * 0.8;
-
-    // 막대
-    const gradient = ctx.createLinearGradient(x, y, x, padding + chartHeight);
-    gradient.addColorStop(0, '#2DD4BF');
-    gradient.addColorStop(1, '#14B8A6');
-    
-    ctx.fillStyle = gradient;
-    ctx.fillRect(x, y, width, barHeight);
-
-    // 당류 값 표시
-    ctx.fillStyle = '#F1F5F9';
-    ctx.font = 'bold 14px Outfit';
-    ctx.textAlign = 'center';
-    ctx.fillText(`${product.sugar}g`, x + width / 2, y - 5);
-
-    // 제품명 표시
-    ctx.fillStyle = '#94A3B8';
-    ctx.font = '11px Outfit';
-    ctx.save();
-    ctx.translate(x + width / 2, padding + chartHeight + 15);
-    ctx.rotate(-Math.PI / 4);
-    
-    const maxNameLength = 15;
-    const displayName = product.name.length > maxNameLength 
-      ? product.name.substring(0, maxNameLength) + '...' 
-      : product.name;
-    
-    ctx.fillText(displayName, 0, 0);
-    ctx.restore();
+  // Top 버튼
+  topBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   });
-
-  // Y축 라벨
-  ctx.fillStyle = '#94A3B8';
-  ctx.font = '12px Outfit';
-  ctx.textAlign = 'right';
-  for (let i = 0; i <= 5; i++) {
-    const value = (maxSugar / 5) * i;
-    const y = padding + chartHeight - (value / maxSugar * chartHeight);
-    ctx.fillText(Math.round(value) + 'g', padding - 10, y + 4);
-  }
+  
+  // 비교 보기 버튼
+  compareBtn.addEventListener('click', () => {
+    const compareSection = document.getElementById('compareSection');
+    compareSection.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  });
 }
 
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
   initFilters();
   renderProducts();
-  renderCompareSection();
-
-  // 윈도우 리사이즈 시 차트 다시 그리기
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      if (state.selectedProducts.length > 0) {
-        drawChart();
-      }
-    }, 250);
-  });
+  updateCompareSection();
+  initFloatingButtons();
 });
