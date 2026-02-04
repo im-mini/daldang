@@ -1,91 +1,118 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>달당 - 카페 음료 당류 비교 및 검색 서비스</title>
-    <meta name="description" content="메가커피, 스타벅스 등 프랜차이즈 카페 음료의 당류를 한눈에 비교하세요. 건강한 선택을 돕는 당류 배틀 서비스, 달당!">
-    <meta name="keywords" content="당류비교, 메가커피 당류, 스타벅스 당류, 저당음료, 다이어트카페, 달당, 카페검색">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="달당: 내 음료의 당류는 안전할까?">
-    <meta property="og:description" content="클릭 한 번으로 카페별 당류 함량을 비교하고 최적의 음료를 찾아보세요.">
-    <meta property="og:image" content="https://your-domain.com/assets/og-image.png">
-    <meta property="og:url" content="https://your-domain.com">
-
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* 핵심 레이아웃 스타일 */
-        :root { --main-color: #ff4757; --bg-color: #f1f2f6; }
-        body { margin: 0; font-family: 'Pretendard', sans-serif; padding-bottom: 80px; background: var(--bg-color); }
-        
-        #search-section { position: sticky; top: 0; background: white; padding: 15px; z-index: 100; border-bottom: 2px solid #ddd; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        input#search-input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.3s; }
-        input#search-input:focus { border-color: var(--main-color); }
-
-        .button-group { display: flex; justify-content: space-between; margin-top: 10px; gap: 10px; }
-        .filter-buttons button, .sort-buttons button { padding: 8px 12px; border: 1px solid #ddd; border-radius: 20px; background: white; cursor: pointer; font-size: 0.9rem; }
-        .filter-buttons button:hover, .sort-buttons button:hover { background: #f0f0f0; }
-
-        /* 카드 리스트 스타일 */
-        #drink-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 20px; }
-        .card { background: white; border-radius: 12px; padding: 15px; cursor: pointer; transition: 0.3s; position: relative; border: 2px solid transparent; }
-        .card.selected { border-color: var(--main-color); background: #fff5f6; }
-        .card .brand-tag { font-size: 0.75rem; color: #888; margin-bottom: 5px; }
-        .card h3 { margin: 5px 0; font-size: 1.1rem; }
-        .sugar-bar-bg { background: #eee; height: 8px; border-radius: 4px; margin-top: 10px; overflow: hidden; }
-        .sugar-bar-fill { background: var(--main-color); height: 100%; transition: width 0.5s; }
-
-        /* 하단 비교함 바 */
-        #compare-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #2f3542; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 1000; }
-        .compare-items-container { display: flex; gap: 10px; flex-grow: 1; overflow-x: auto; }
-        .compare-chip { background: #57606f; padding: 5px 12px; border-radius: 15px; font-size: 0.85rem; white-space: nowrap; }
-        .battle-btn { background: var(--main-color); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: 15px; }
-
-        /* 모달 스타일 */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; }
-        #compare-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 20px; z-index: 2001; width: 90%; max-width: 450px; }
-        #sentinel { height: 20px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>달당 - 카페 음료 당류 비교</title>
+  <meta name="description" content="카페 음료의 당류를 각설탕으로 비교하세요">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍬</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- 광고 사이드바 (PC) -->
+  <div class="ad-sidebar ad-left">
+    <div class="ad-box">구글 광고</div>
+  </div>
+  <div class="ad-sidebar ad-right">
+    <div class="ad-box">구글 광고</div>
+  </div>
 
-    <header id="search-section">
-        <h1 style="margin: 0 0 10px 0; font-size: 1.5rem; color: var(--main-color);">🥤 달당 (Daldang)</h1>
-        <input type="text" id="search-input" oninput="handleSearch(event)" placeholder="음료 이름, 브랜드, 태그를 입력하세요">
-        
-        <div class="button-group">
-            <div class="filter-buttons">
-                <button onclick="filterByBrand('all')">전체</button>
-                <button onclick="filterByBrand('메가커피')">메가</button>
-                <button onclick="filterByBrand('스타벅스')">스벅</button>
-            </div>
-            <div class="sort-buttons">
-                <button onclick="handleSort('lowSugar')">저당순</button>
-                <button onclick="handleSort('highSugar')">고당순</button>
-            </div>
-        </div>
+  <!-- 메인 컨테이너 -->
+  <div class="container">
+    <!-- 헤더 -->
+    <header class="header">
+      <h1 class="logo">🍬 달당</h1>
+      <p class="tagline">카페 음료의 당류를 각설탕으로 확인하세요</p>
     </header>
 
-    <main>
-        <div id="drink-list"></div>
-        <div id="sentinel"></div>
-    </main>
-
-    <div id="compare-bar">
-        <div class="compare-items-container" id="compare-cart-ui">
-            <span>음료를 선택하여 당류를 비교해보세요</span>
+    <!-- 상단 배너 광고 -->
+    <div class="banner-ad" id="bannerAd">
+      <div class="banner-slide active">
+        <div class="banner-content">
+          <h3>🎉 신제품 출시!</h3>
+          <p>제로 슈거 자몽 에이드 - 메가커피</p>
         </div>
-        <div id="battle-btn-area"></div>
+      </div>
+      <div class="banner-slide">
+        <div class="banner-content">
+          <h3>☕ 저당 시리즈</h3>
+          <p>건강하게 즐기는 카페 라이프</p>
+        </div>
+      </div>
+      <button class="banner-btn prev" onclick="changeBanner(-1)">‹</button>
+      <button class="banner-btn next" onclick="changeBanner(1)">›</button>
     </div>
 
-    <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
-    <div id="compare-modal">
-        <h2 style="text-align: center;">⚔️ 당류 배틀 결과</h2>
-        <div id="modal-content"></div>
-        <button onclick="closeModal()" style="width: 100%; padding: 12px; margin-top: 20px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer;">닫기</button>
+    <!-- 검색 섹션 -->
+    <div class="search-section">
+      <div class="search-box">
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-input" 
+          placeholder="메뉴명, 브랜드, 태그로 검색하세요 (예: 프라푸치노, 스타벅스, 초코)"
+        />
+        <button class="search-btn">🔍</button>
+      </div>
+      <p class="search-info">💡 일일 권장 당류 <strong>50g (각설탕 약 12개)</strong></p>
     </div>
 
-    <script src="app.js"></script>
+    <!-- 브랜드 필터 -->
+    <div class="brand-filter" id="brandFilter"></div>
+
+    <!-- 정렬 & 결과 수 -->
+    <div class="controls">
+      <div class="result-info">
+        <span id="resultCount">0</span>개 메뉴
+      </div>
+      <div class="sort-buttons">
+        <button class="sort-btn active" data-sort="low">저당순</button>
+        <button class="sort-btn" data-sort="high">고당순</button>
+        <button class="sort-btn" data-sort="new">신상품</button>
+      </div>
+    </div>
+
+    <!-- 메뉴 그리드 -->
+    <div class="menu-grid" id="menuGrid"></div>
+
+    <!-- 로딩 인디케이터 -->
+    <div class="loading" id="loading" style="display: none;">
+      <div class="spinner"></div>
+      <p>메뉴를 불러오는 중...</p>
+    </div>
+  </div>
+
+  <!-- 비교 모달 -->
+  <div class="modal" id="compareModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📊 메뉴 비교</h2>
+        <button class="modal-close" onclick="toggleCompareModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="compareList"></div>
+        <div class="empty-compare" id="emptyCompare">
+          <p>비교할 메뉴를 선택해주세요</p>
+          <small>카드 하단의 "비교 담기" 버튼을 눌러보세요</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 플로팅 버튼 -->
+  <div class="floating-buttons">
+    <button class="float-btn compare-btn" onclick="toggleCompareModal()" id="compareBtn">
+      <span class="btn-icon">📊</span>
+      <span class="btn-badge" id="compareBadge">0</span>
+    </button>
+    <button class="float-btn top-btn" onclick="scrollToTop()" id="topBtn">
+      <span class="btn-icon">🔝</span>
+    </button>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
