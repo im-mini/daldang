@@ -1,6 +1,4 @@
-// 카페 제품 데이터
-const products = [
-  // 스타벅스
+const drinkData = [
   {
     id: 1,
     brand: '스타벅스',
@@ -8,211 +6,30 @@ const products = [
     category: '커피',
     sugar: 0,
     size: 'Tall (355ml)',
-    sweetener: null,
-    tags: ['제로슈가']
+    sweetenerType: 'none', // white
+    sweetenerName: '없음',
+    tags: ['당함량0g', '비건']
   },
   {
     id: 2,
-    brand: '스타벅스',
-    name: '카페 라떼',
-    category: '커피',
+    brand: '매머드 커피',
+    name: '저당 딸기 라떼',
+    category: '라떼',
     sugar: 17,
     size: 'Tall (355ml)',
-    sweetener: null,
-    tags: []
+    sweetenerType: 'safe', // green
+    sweetenerName: '스테비아',
+    tags: ['저당', '제로슈가']
   },
   {
     id: 3,
-    brand: '스타벅스',
-    name: '자바칩 프라푸치노',
-    category: '프라푸치노',
-    sugar: 48,
-    size: 'Tall (355ml)',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 4,
-    brand: '스타벅스',
-    name: '카라멜 마키아또',
-    category: '커피',
-    sugar: 25,
-    size: 'Tall (355ml)',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 5,
-    brand: '스타벅스',
-    name: '자몽 허니 블랙티',
-    category: '티',
-    sugar: 30,
-    size: 'Tall (355ml)',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 6,
-    brand: '스타벅스',
-    name: '아이스크림 블렌딩 콜드브루',
-    category: '블렌디드',
-    sugar: 53,
-    size: 'Tall (355ml)',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 7,
-    brand: '스타벅스',
-    name: '말차 라떼',
-    category: '티',
-    sugar: 32,
-    size: 'Tall (355ml)',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 8,
-    brand: '스타벅스',
-    name: '바닐라 라떼',
-    category: '커피',
-    sugar: 35,
-    size: 'Tall (355ml)',
-    sweetener: null,
-    tags: []
-  },
-  
-  // 투썸플레이스
-  {
-    id: 9,
-    brand: '투썸플레이스',
-    name: '아메리카노',
-    category: '커피',
-    sugar: 0,
-    size: '기본 (355ml)',
-    sweetener: null,
-    tags: ['제로슈가']
-  },
-  {
-    id: 10,
-    brand: '투썸플레이스',
-    name: '카페 라떼',
-    category: '커피',
-    sugar: 15,
-    size: '기본 (355ml)',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 11,
-    brand: '투썸플레이스',
-    name: '20곡 오틀리 라떼',
-    category: '커피',
-    sugar: 24,
-    size: '기본 (315ml)',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 12,
-    brand: '투썸플레이스',
-    name: '초코 케이크',
-    category: '디저트',
-    sugar: 38,
-    size: '1조각',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 13,
-    brand: '투썸플레이스',
-    name: '딸기 케이크',
-    category: '디저트',
-    sugar: 42,
-    size: '1조각',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 14,
-    brand: '투썸플레이스',
-    name: '티라미수',
-    category: '디저트',
-    sugar: 35,
-    size: '1조각',
-    sweetener: null,
-    tags: []
-  },
-  
-  // 이디야
-  {
-    id: 15,
-    brand: '이디야',
-    name: '아메리카노',
-    category: '커피',
-    sugar: 0,
-    size: 'Large (532ml)',
-    sweetener: null,
-    tags: ['제로슈가']
-  },
-  {
-    id: 16,
-    brand: '이디야',
-    name: '카페 라떼',
-    category: '커피',
-    sugar: 24,
-    size: 'Large (532ml)',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 17,
-    brand: '이디야',
-    name: '멜팅 피스타치오',
-    category: '음료',
-    sugar: 49,
-    size: 'Large (532ml)',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 18,
-    brand: '이디야',
-    name: '헤이즐넛 젤라또 카페모카',
-    category: '음료',
-    sugar: 71,
-    size: 'Extra (680ml)',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 19,
-    brand: '이디야',
-    name: '너티 초콜릿',
-    category: '음료',
-    sugar: 58,
-    size: 'Large (532ml)',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 20,
-    brand: '이디야',
-    name: '아샷추 복숭아',
-    category: '음료',
-    sugar: 57,
-    size: 'Large (532ml)',
-    sweetener: null,
-    tags: []
-  },
-  {
-    id: 21,
-    brand: '이디야',
-    name: '제로슈가 달달커피',
-    category: '커피',
-    sugar: 0,
-    size: 'Large (532ml)',
-    sweetener: '에리스리톨',
-    tags: ['제로슈가', '에리스리톨']
+    brand: '컴포즈커피',
+    name: '제로슈거 자몽에이드',
+    category: '에이드',
+    sugar: 2,
+    size: 'Big (591ml)',
+    sweetenerType: 'caution', // orange
+    sweetenerName: '말티톨 혼합',
+    tags: ['제로슈가', '혈당주의']
   }
 ];
