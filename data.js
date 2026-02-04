@@ -7,7 +7,9 @@ const products = [
     name: '아메리카노',
     category: '커피',
     sugar: 0,
-    size: 'Tall (355ml)'
+    size: 'Tall (355ml)',
+    sweetener: null,
+    tags: ['제로슈가']
   },
   {
     id: 2,
@@ -15,7 +17,9 @@ const products = [
     name: '카페 라떼',
     category: '커피',
     sugar: 17,
-    size: 'Tall (355ml)'
+    size: 'Tall (355ml)',
+    sweetener: null,
+    tags: []
   },
   {
     id: 3,
@@ -23,7 +27,9 @@ const products = [
     name: '자바칩 프라푸치노',
     category: '프라푸치노',
     sugar: 48,
-    size: 'Tall (355ml)'
+    size: 'Tall (355ml)',
+    sweetener: null,
+    tags: []
   },
   {
     id: 4,
@@ -31,7 +37,9 @@ const products = [
     name: '카라멜 마키아또',
     category: '커피',
     sugar: 25,
-    size: 'Tall (355ml)'
+    size: 'Tall (355ml)',
+    sweetener: null,
+    tags: []
   },
   {
     id: 5,
@@ -39,7 +47,9 @@ const products = [
     name: '자몽 허니 블랙티',
     category: '티',
     sugar: 30,
-    size: 'Tall (355ml)'
+    size: 'Tall (355ml)',
+    sweetener: null,
+    tags: []
   },
   {
     id: 6,
@@ -47,7 +57,9 @@ const products = [
     name: '아이스크림 블렌딩 콜드브루',
     category: '블렌디드',
     sugar: 53,
-    size: 'Tall (355ml)'
+    size: 'Tall (355ml)',
+    sweetener: null,
+    tags: []
   },
   {
     id: 7,
@@ -55,7 +67,9 @@ const products = [
     name: '말차 라떼',
     category: '티',
     sugar: 32,
-    size: 'Tall (355ml)'
+    size: 'Tall (355ml)',
+    sweetener: null,
+    tags: []
   },
   {
     id: 8,
@@ -63,7 +77,9 @@ const products = [
     name: '바닐라 라떼',
     category: '커피',
     sugar: 35,
-    size: 'Tall (355ml)'
+    size: 'Tall (355ml)',
+    sweetener: null,
+    tags: []
   },
   
   // 투썸플레이스
@@ -73,7 +89,9 @@ const products = [
     name: '아메리카노',
     category: '커피',
     sugar: 0,
-    size: '기본 (355ml)'
+    size: '기본 (355ml)',
+    sweetener: null,
+    tags: ['제로슈가']
   },
   {
     id: 10,
@@ -81,7 +99,9 @@ const products = [
     name: '카페 라떼',
     category: '커피',
     sugar: 15,
-    size: '기본 (355ml)'
+    size: '기본 (355ml)',
+    sweetener: null,
+    tags: []
   },
   {
     id: 11,
@@ -89,7 +109,9 @@ const products = [
     name: '20곡 오틀리 라떼',
     category: '커피',
     sugar: 24,
-    size: '기본 (315ml)'
+    size: '기본 (315ml)',
+    sweetener: null,
+    tags: []
   },
   {
     id: 12,
@@ -97,7 +119,9 @@ const products = [
     name: '초코 케이크',
     category: '디저트',
     sugar: 38,
-    size: '1조각'
+    size: '1조각',
+    sweetener: null,
+    tags: []
   },
   {
     id: 13,
@@ -105,7 +129,9 @@ const products = [
     name: '딸기 케이크',
     category: '디저트',
     sugar: 42,
-    size: '1조각'
+    size: '1조각',
+    sweetener: null,
+    tags: []
   },
   {
     id: 14,
@@ -113,7 +139,9 @@ const products = [
     name: '티라미수',
     category: '디저트',
     sugar: 35,
-    size: '1조각'
+    size: '1조각',
+    sweetener: null,
+    tags: []
   },
   
   // 이디야
@@ -123,7 +151,9 @@ const products = [
     name: '아메리카노',
     category: '커피',
     sugar: 0,
-    size: 'Large (532ml)'
+    size: 'Large (532ml)',
+    sweetener: null,
+    tags: ['제로슈가']
   },
   {
     id: 16,
@@ -131,7 +161,9 @@ const products = [
     name: '카페 라떼',
     category: '커피',
     sugar: 24,
-    size: 'Large (532ml)'
+    size: 'Large (532ml)',
+    sweetener: null,
+    tags: []
   },
   {
     id: 17,
@@ -139,7 +171,9 @@ const products = [
     name: '멜팅 피스타치오',
     category: '음료',
     sugar: 49,
-    size: 'Large (532ml)'
+    size: 'Large (532ml)',
+    sweetener: null,
+    tags: []
   },
   {
     id: 18,
@@ -147,7 +181,9 @@ const products = [
     name: '헤이즐넛 젤라또 카페모카',
     category: '음료',
     sugar: 71,
-    size: 'Extra (680ml)'
+    size: 'Extra (680ml)',
+    sweetener: null,
+    tags: []
   },
   {
     id: 19,
@@ -155,7 +191,9 @@ const products = [
     name: '너티 초콜릿',
     category: '음료',
     sugar: 58,
-    size: 'Large (532ml)'
+    size: 'Large (532ml)',
+    sweetener: null,
+    tags: []
   },
   {
     id: 20,
@@ -163,7 +201,9 @@ const products = [
     name: '아샷추 복숭아',
     category: '음료',
     sugar: 57,
-    size: 'Large (532ml)'
+    size: 'Large (532ml)',
+    sweetener: null,
+    tags: []
   },
   {
     id: 21,
@@ -171,6 +211,8 @@ const products = [
     name: '제로슈가 달달커피',
     category: '커피',
     sugar: 0,
-    size: 'Large (532ml)'
+    size: 'Large (532ml)',
+    sweetener: '에리스리톨',
+    tags: ['제로슈가', '에리스리톨']
   }
 ];
