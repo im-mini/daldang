@@ -55,6 +55,7 @@ function handleSearch() {
 // 4. 정렬 로직
 function handleSort() {
     const sortValue = sortSelect.value;
+    
     if (sortValue === 'sugar-asc') {
         filteredDrinks.sort((a, b) => a.sugar - b.sugar);
     } else if (sortValue === 'sugar-desc') {
