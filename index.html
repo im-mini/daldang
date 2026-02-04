@@ -4,130 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>달당 | 카페 음료 당류 & 대체 감미료 비교 검색</title>
-    <meta name="description" content="스타벅스, 메가커피 등 주요 카페의 당류 함량을 각설탕으로 시각화하여 확인하세요. 말티톨, 스테비아 등 대체 감미료 정보까지 제공합니다.">
-    <meta name="keywords" content="저당음료, 제로슈가, 카페당류비교, 혈당관리, 다이어트음료, 말티톨체크, 달당">
-    <link rel="canonical" href="https://im-mini.github.io/daldang/">
-    
+    <title>달당 - 카페 음료 당류 비교 및 검색 서비스</title>
+    <meta name="description" content="메가커피, 스타벅스 등 프랜차이즈 카페 음료의 당류를 한눈에 비교하세요. 건강한 선택을 돕는 당류 배틀 서비스, 달당!">
+    <meta name="keywords" content="당류비교, 메가커피 당류, 스타벅스 당류, 저당음료, 다이어트카페, 달당, 카페검색">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="달당 - 죄책감 없는 카페 선택">
-    <meta property="og:description" content="오늘 마실 음료의 당류와 감미료, 미리 확인하셨나요?">
-    <meta property="og:url" content="https://im-mini.github.io/daldang/">
-    <meta property="og:image" content="https://im-mini.github.io/daldang/og-image.png">
+    <meta property="og:title" content="달당: 내 음료의 당류는 안전할까?">
+    <meta property="og:description" content="클릭 한 번으로 카페별 당류 함량을 비교하고 최적의 음료를 찾아보세요.">
+    <meta property="og:image" content="https://your-domain.com/assets/og-image.png">
+    <meta property="og:url" content="https://your-domain.com">
 
     <link rel="stylesheet" href="style.css">
-    
-    </head>
+    <style>
+        /* 핵심 레이아웃 스타일 */
+        :root { --main-color: #ff4757; --bg-color: #f1f2f6; }
+        body { margin: 0; font-family: 'Pretendard', sans-serif; padding-bottom: 80px; background: var(--bg-color); }
+        
+        #search-section { position: sticky; top: 0; background: white; padding: 15px; z-index: 100; border-bottom: 2px solid #ddd; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        input#search-input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.3s; }
+        input#search-input:focus { border-color: var(--main-color); }
+
+        .button-group { display: flex; justify-content: space-between; margin-top: 10px; gap: 10px; }
+        .filter-buttons button, .sort-buttons button { padding: 8px 12px; border: 1px solid #ddd; border-radius: 20px; background: white; cursor: pointer; font-size: 0.9rem; }
+        .filter-buttons button:hover, .sort-buttons button:hover { background: #f0f0f0; }
+
+        /* 카드 리스트 스타일 */
+        #drink-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 20px; }
+        .card { background: white; border-radius: 12px; padding: 15px; cursor: pointer; transition: 0.3s; position: relative; border: 2px solid transparent; }
+        .card.selected { border-color: var(--main-color); background: #fff5f6; }
+        .card .brand-tag { font-size: 0.75rem; color: #888; margin-bottom: 5px; }
+        .card h3 { margin: 5px 0; font-size: 1.1rem; }
+        .sugar-bar-bg { background: #eee; height: 8px; border-radius: 4px; margin-top: 10px; overflow: hidden; }
+        .sugar-bar-fill { background: var(--main-color); height: 100%; transition: width 0.5s; }
+
+        /* 하단 비교함 바 */
+        #compare-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #2f3542; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 1000; }
+        .compare-items-container { display: flex; gap: 10px; flex-grow: 1; overflow-x: auto; }
+        .compare-chip { background: #57606f; padding: 5px 12px; border-radius: 15px; font-size: 0.85rem; white-space: nowrap; }
+        .battle-btn { background: var(--main-color); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: 15px; }
+
+        /* 모달 스타일 */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; }
+        #compare-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 20px; z-index: 2001; width: 90%; max-width: 450px; }
+        #sentinel { height: 20px; }
+    </style>
+</head>
 <body>
 
-    <aside class="ad-side left-ad">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-################"
-             data-ad-slot="########"
-             data-ad-format="vertical"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </aside>
-
-    <div class="container">
-        <header>
-            <div class="logo-area">
-                <a href="/daldang" class="logo">달당 🧊</a>
+    <header id="search-section">
+        <h1 style="margin: 0 0 10px 0; font-size: 1.5rem; color: var(--main-color);">🥤 달당 (Daldang)</h1>
+        <input type="text" id="search-input" oninput="handleSearch(event)" placeholder="음료 이름, 브랜드, 태그를 입력하세요">
+        
+        <div class="button-group">
+            <div class="filter-buttons">
+                <button onclick="filterByBrand('all')">전체</button>
+                <button onclick="filterByBrand('메가커피')">메가</button>
+                <button onclick="filterByBrand('스타벅스')">스벅</button>
             </div>
-            <nav class="top-nav">
-                <span>로그인</span>
-                <span>메뉴제보</span>
-            </nav>
-        </header>
-
-        <main>
-            <section class="search-hero">
-                <h1>마시기 전, 당(糖) 체크</h1>
-                <p>2030 여성을 위한 스마트한 저당 라이프</p>
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="카페명 또는 메뉴를 입력하세요 (예: 스타벅스, 자허블)">
-                    <button id="searchBtn">🔍</button>
-                </div>
-                <div class="trending-tags">
-                    <span>#스테비아</span> <span>#제로에이드</span> <span>#저당라떼</span> <span>#말티톨프리</span>
-                </div>
-            </section>
-
-            <section class="paid-promo" id="promoSlider">
-                <div class="promo-item">
-                    <img src="https://via.placeholder.com/800x200?text=Brand+Promotion+Banner" alt="브랜드 신제품 홍보">
-                    <div class="promo-text">
-                        <strong>[NEW] OO카페 제로 슈가 에이드 출시!</strong>
-                        <span>지금 바로 당류 0g의 달콤함을 만나보세요.</span>
-                    </div>
-                </div>
-            </section>
-
-            <section class="list-filter">
-                <div class="count-info">총 <span id="totalCount">0</span>개의 메뉴</div>
-                <div class="sort-options">
-                    <select id="sortSelect">
-                        <option value="latest">최신순</option>
-                        <option value="sugar-asc">당류 낮은순</option>
-                        <option value="sugar-desc">당류 높은순</option>
-                    </select>
-                </div>
-            </section>
-
-            <div id="drinkGrid" class="drink-grid">
-                </div>
-
-            <section class="ad-mid-mobile">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-format="fluid"
-                     data-ad-layout-key="-fb+5w+4e-db+86"
-                     data-ad-client="ca-pub-################"
-                     data-ad-slot="########"></ins>
-                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-            </section>
-        </main>
-
-        <footer>
-            <p>&copy; 2026 달당. All rights reserved. im-mini.github.io/daldang</p>
-        </footer>
-    </div>
-
-    <aside class="ad-side right-ad">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-################"
-             data-ad-slot="########"
-             data-ad-format="vertical"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </aside>
-
-    <div id="compareStickyBar" class="compare-bar hidden">
-        <div class="compare-info">
-            <span id="compareSelectedCount">0</span>/3 선택됨
-        </div>
-        <button id="compareOpenBtn" class="btn-primary">선택 메뉴 비교하기</button>
-        <button id="compareResetBtn" class="btn-text">초기화</button>
-    </div>
-
-    <div id="compareModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>음료 당류 비교 결과</h2>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <table class="compare-table">
-                    <thead id="compareHead">
-                        </thead>
-                    <tbody id="compareBody">
-                        </tbody>
-                </table>
+            <div class="sort-buttons">
+                <button onclick="handleSort('lowSugar')">저당순</button>
+                <button onclick="handleSort('highSugar')">고당순</button>
             </div>
         </div>
+    </header>
+
+    <main>
+        <div id="drink-list"></div>
+        <div id="sentinel"></div>
+    </main>
+
+    <div id="compare-bar">
+        <div class="compare-items-container" id="compare-cart-ui">
+            <span>음료를 선택하여 당류를 비교해보세요</span>
+        </div>
+        <div id="battle-btn-area"></div>
     </div>
 
-    <script src="data.js"></script>
+    <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+    <div id="compare-modal">
+        <h2 style="text-align: center;">⚔️ 당류 배틀 결과</h2>
+        <div id="modal-content"></div>
+        <button onclick="closeModal()" style="width: 100%; padding: 12px; margin-top: 20px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer;">닫기</button>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>
