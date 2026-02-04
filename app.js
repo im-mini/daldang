@@ -60,7 +60,7 @@ function handleSort() {
     } else if (sortValue === 'sugar-desc') {
         filteredDrinks.sort((a, b) => b.sugar - a.sugar);
     } else {
-        filteredDrinks.sort((a, b) => b.id - a.id); // 최신순(ID 역순)
+        filteredDrinks.sort((a, b) => b.id.localeCompare(a.id));
     }
     renderDrinks(filteredDrinks);
 }
