@@ -3,400 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>당류 비교 - 카페 음료 & 디저트</title>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/recharts@2.5.0/dist/Recharts.js"></script>
+  <title>달당 - 카페 음료 & 디저트 당류 비교</title>
+  <meta name="description" content="스타벅스, 투썸플레이스, 이디야 등 카페 음료와 디저트의 당류를 한눈에 비교하세요. 건강한 선택을 위한 달당!">
+  <meta name="keywords" content="카페, 음료, 디저트, 당류, 당분, 건강, 스타벅스, 투썸플레이스, 이디야, 영양정보">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="달당 - 카페 음료 & 디저트 당류 비교">
+  <meta property="og:description" content="카페 음료와 디저트의 당류를 한눈에 비교하세요">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://im-mini.github.io/daldang">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍬</text></svg>">
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #2DD4BF;
-      --primary-dark: #14B8A6;
-      --danger: #EF4444;
-      --warning: #F59E0B;
-      --success: #10B981;
-      --bg: #0F172A;
-      --surface: #1E293B;
-      --surface-light: #334155;
-      --text: #F1F5F9;
-      --text-muted: #94A3B8;
-      --border: #334155;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.6;
-    }
-
-    #root {
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-    }
-
-    /* Header */
-    .header {
-      text-align: center;
-      margin-bottom: 3rem;
-      position: relative;
-      padding: 3rem 1rem;
-    }
-
-    .header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-      opacity: 0.1;
-      filter: blur(40px);
-      z-index: 0;
-    }
-
-    .header-content {
-      position: relative;
-      z-index: 1;
-    }
-
-    h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, var(--primary) 0%, #60A5FA 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.02em;
-    }
-
-    .subtitle {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      font-weight: 300;
-    }
-
-    /* Filters */
-    .filters {
-      background: var(--surface);
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      border: 1px solid var(--border);
-      backdrop-filter: blur(10px);
-    }
-
-    .filter-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .filter-group:last-child {
-      margin-bottom: 0;
-    }
-
-    .filter-label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-      font-size: 0.9rem;
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .filter-buttons {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 0.5rem 1rem;
-      border: 1px solid var(--border);
-      background: var(--surface-light);
-      color: var(--text);
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: all 0.2s;
-      font-family: 'Outfit', sans-serif;
-    }
-
-    .filter-btn:hover {
-      border-color: var(--primary);
-      background: rgba(45, 212, 191, 0.1);
-    }
-
-    .filter-btn.active {
-      background: var(--primary);
-      color: var(--bg);
-      border-color: var(--primary);
-    }
-
-    .search-box {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      background: var(--surface-light);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 1rem;
-      font-family: 'Outfit', sans-serif;
-      transition: all 0.2s;
-    }
-
-    .search-box:focus {
-      outline: none;
-      border-color: var(--primary);
-      background: rgba(45, 212, 191, 0.05);
-    }
-
-    .search-box::placeholder {
-      color: var(--text-muted);
-    }
-
-    /* Product Grid */
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .product-card {
-      background: var(--surface);
-      border-radius: 12px;
-      padding: 1.5rem;
-      border: 1px solid var(--border);
-      transition: all 0.3s;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .product-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary), #60A5FA);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .product-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-2px);
-    }
-
-    .product-card:hover::before {
-      opacity: 1;
-    }
-
-    .product-card.selected {
-      border-color: var(--primary);
-      background: rgba(45, 212, 191, 0.05);
-    }
-
-    .product-card.selected::before {
-      opacity: 1;
-    }
-
-    .product-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
-    }
-
-    .product-brand {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      background: var(--surface-light);
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .sugar-emoji {
-      font-size: 2rem;
-      animation: bounce 0.5s ease;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-
-    .product-name {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--text);
-    }
-
-    .product-category {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-    }
-
-    .sugar-info {
-      display: flex;
-      align-items: baseline;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .sugar-amount {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
-
-    .sugar-unit {
-      font-size: 1rem;
-      color: var(--text-muted);
-    }
-
-    .sugar-bar {
-      height: 6px;
-      background: var(--surface-light);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-top: 0.5rem;
-    }
-
-    .sugar-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--success), var(--warning), var(--danger));
-      border-radius: 3px;
-      transition: width 0.5s ease;
-    }
-
-    /* Compare Section */
-    .compare-section {
-      background: var(--surface);
-      border-radius: 16px;
-      padding: 2rem;
-      border: 1px solid var(--border);
-      margin-top: 2rem;
-    }
-
-    .compare-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-
-    .compare-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .selected-count {
-      background: var(--primary);
-      color: var(--bg);
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    .compare-chart {
-      margin-top: 2rem;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-muted);
-    }
-
-    .empty-state-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      opacity: 0.5;
-    }
-
-    /* Daily Limit Info */
-    .daily-limit-info {
-      background: linear-gradient(135deg, rgba(45, 212, 191, 0.1), rgba(96, 165, 250, 0.1));
-      border: 1px solid var(--primary);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    .daily-limit-info strong {
-      color: var(--primary);
-      font-size: 1.2rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .container {
-        padding: 1rem;
-      }
-
-      .header {
-        padding: 2rem 1rem;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-
-      .products-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .compare-section {
-        padding: 1.5rem;
-      }
-    }
-
-    /* Loading Animation */
-    @keyframes shimmer {
-      0% { background-position: -1000px 0; }
-      100% { background-position: 1000px 0; }
-    }
-
-    .loading {
-      background: linear-gradient(90deg, var(--surface) 0%, var(--surface-light) 50%, var(--surface) 100%);
-      background-size: 1000px 100%;
-      animation: shimmer 2s infinite;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="root"></div>
+  <div class="container">
+    <header class="header">
+      <div class="header-content">
+        <h1>🍬 달당</h1>
+        <p class="subtitle">카페 음료 & 디저트의 당류를 한눈에 비교하세요</p>
+      </div>
+    </header>
 
-  <script type="text/babel" src="app.js"></script>
+    <div class="daily-limit-info">
+      💡 <strong>일일 권장 당류 섭취량: 50g</strong> (WHO 기준)
+    </div>
+
+    <div class="filters">
+      <div class="filter-group">
+        <label class="filter-label">브랜드</label>
+        <div class="filter-buttons" id="brandFilters"></div>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">카테고리</label>
+        <div class="filter-buttons" id="categoryFilters"></div>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">정렬</label>
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-sort="low">당류 낮은순</button>
+          <button class="filter-btn" data-sort="high">당류 높은순</button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">검색</label>
+        <input
+          type="text"
+          class="search-box"
+          id="searchInput"
+          placeholder="제품명 또는 브랜드 검색..."
+        />
+      </div>
+    </div>
+
+    <div class="products-grid" id="productsGrid"></div>
+
+    <div class="compare-section" id="compareSection">
+      <div class="compare-header">
+        <h2 class="compare-title">📊 당류 비교</h2>
+        <span class="selected-count" id="selectedCount">0개 선택</span>
+      </div>
+      
+      <div class="compare-chart" id="compareChart">
+        <canvas id="chartCanvas"></canvas>
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <div class="empty-state-icon">📊</div>
+        <p>제품을 클릭하여 당류를 비교해보세요</p>
+      </div>
+    </div>
+
+    <footer style="text-align: center; margin-top: 4rem; padding: 2rem; color: var(--text-muted); font-size: 0.9rem;">
+      <p>🍬 <strong>달당 (Daldang)</strong> - 건강한 선택을 위한 당류 비교 서비스</p>
+      <p style="margin-top: 0.5rem; font-size: 0.8rem;">Made with ❤️ | <a href="https://github.com/im-mini/daldang" style="color: var(--primary); text-decoration: none;">GitHub</a></p>
+    </footer>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
