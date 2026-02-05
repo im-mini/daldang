@@ -17,12 +17,27 @@ const state = {
 // 메타데이터 로드 (빠른 검색용)
 async function loadMetadata() {
   try {
+    // ========================================
+    // 🔥 새 브랜드 추가 방법:
+    // 1. /data 폴더에 브랜드명.json 파일 생성
+    // 2. 아래 fetch 배열에 추가
+    // 예: fetch('data/투썸플레이스.json').then(r => r.json())
+    // ========================================
+    
     const [starbucks, mega] = await Promise.all([
       fetch('data/starbucks.json').then(r => r.json()),
       fetch('data/mega-coffee.json').then(r => r.json())
+      // 새 브랜드 추가 예시:
+      // fetch('data/twosome.json').then(r => r.json()),
+      // fetch('data/ediya.json').then(r => r.json())
     ]);
     
+    // ========================================
+    // 3. allData 배열에 새 브랜드 추가
+    // ========================================
     const allData = [...starbucks, ...mega];
+    // 새 브랜드 추가 시:
+    // const allData = [...starbucks, ...mega, ...twosome, ...ediya];
     
     // 검색용 메타데이터만 추출 (경량화)
     state.metadata = allData.map(menu => ({
