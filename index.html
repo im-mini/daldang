@@ -53,44 +53,61 @@
 
   <!-- 메인 컨테이너 -->
   <div class="container">
-    <!-- 고정 헤더 -->
+    <!-- 미니멀 고정 헤더 -->
     <header class="header fixed-header">
-      <div class="header-top">
-        <div class="logo-section">
-          <h1 class="logo">🍬 달당</h1>
-          <p class="daily-info">💡 일일 권장 당류 <strong>50g (각설탕 약 12개)</strong></p>
-        </div>
+      <div class="header-minimal">
+        <!-- 좌측: 검색 아이콘 -->
+        <button class="search-icon-btn" onclick="toggleSearch()">
+          🔍
+        </button>
         
-        <div class="search-section-header">
-          <div class="search-box">
-            <input 
-              type="text" 
-              id="searchInput" 
-              class="search-input" 
-              placeholder="메뉴명, 브랜드, 태그로 검색 (예: 프라푸치노, 스테비아)"
-            />
-            <button class="search-btn">🔍</button>
-          </div>
+        <!-- 우측: 달당 로고 -->
+        <div class="logo-minimal">🍬 달당</div>
+      </div>
+      
+      <!-- 검색창 (토글) -->
+      <div class="search-overlay" id="searchOverlay">
+        <div class="search-overlay-content">
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input-overlay" 
+            placeholder="메뉴명, 브랜드, 태그로 검색 (예: 프라푸치노, 스테비아)"
+          />
+          <button class="search-close-btn" onclick="toggleSearch()">✕</button>
         </div>
       </div>
     </header>
 
-    <!-- 상단 배너 광고 (크기 증가) -->
-    <div class="banner-ad" id="bannerAd">
+    <!-- 대형 슬라이드 배너 -->
+    <div class="hero-banner" id="heroBanner">
       <div class="banner-slide active">
-        <div class="banner-content">
-          <h3>🎉 신제품 출시!</h3>
+        <div class="banner-content-large">
+          <h2>🎉 신제품 출시!</h2>
           <p>제로 슈거 자몽 에이드 - 메가커피</p>
+          <p class="banner-subtitle">달콤함은 그대로, 당은 0g</p>
         </div>
       </div>
       <div class="banner-slide">
-        <div class="banner-content">
-          <h3>☕ 저당 시리즈</h3>
+        <div class="banner-content-large">
+          <h2>☕ 저당 시리즈</h2>
           <p>건강하게 즐기는 카페 라이프</p>
+          <p class="banner-subtitle">일일 권장 당류 50g (각설탕 약 12개)</p>
         </div>
       </div>
-      <button class="banner-btn prev" onclick="changeBanner(-1)">‹</button>
-      <button class="banner-btn next" onclick="changeBanner(1)">›</button>
+      <button class="banner-btn-large prev" onclick="changeBanner(-1)">‹</button>
+      <button class="banner-btn-large next" onclick="changeBanner(1)">›</button>
+      
+      <!-- 배너 인디케이터 -->
+      <div class="banner-indicators">
+        <span class="indicator active" onclick="goToBanner(0)"></span>
+        <span class="indicator" onclick="goToBanner(1)"></span>
+      </div>
+    </div>
+    
+    <!-- 일일 권장량 안내 -->
+    <div class="info-bar">
+      💡 일일 권장 당류 <strong>50g (각설탕 약 12개)</strong>
     </div>
 
     <!-- 브랜드 필터 -->
