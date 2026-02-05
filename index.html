@@ -53,29 +53,29 @@
 
   <!-- 메인 컨테이너 -->
   <div class="container">
-    <!-- 미니멀 고정 헤더 -->
+    <!-- 고정 헤더 -->
     <header class="header fixed-header">
       <div class="header-minimal">
-        <!-- 좌측: 검색 아이콘 -->
-        <button class="search-icon-btn" onclick="toggleSearch()">
-          🔍
-        </button>
+        <!-- 좌측: 로고 -->
+        <div class="logo-section-left">
+          <div class="logo-minimal">🍬 달당</div>
+          <p class="daily-info-small">💡 일일 권장 당류 <strong>50g (각설탕 약 12개)</strong></p>
+        </div>
         
-        <!-- 우측: 달당 로고 -->
-        <div class="logo-minimal">🍬 달당</div>
-      </div>
-      
-      <!-- 검색창 (토글) -->
-      <div class="search-overlay" id="searchOverlay">
-        <div class="search-overlay-content">
+        <!-- 중간: 검색창 (토글) -->
+        <div class="search-middle" id="searchMiddle">
           <input 
             type="text" 
             id="searchInput" 
-            class="search-input-overlay" 
-            placeholder="메뉴명, 브랜드, 태그로 검색 (예: 프라푸치노, 스테비아)"
+            class="search-input-middle" 
+            placeholder="메뉴명, 브랜드, 태그로 검색"
           />
-          <button class="search-close-btn" onclick="toggleSearch()">✕</button>
         </div>
+        
+        <!-- 우측: 검색 아이콘 -->
+        <button class="search-icon-btn" onclick="toggleSearch()">
+          🔍
+        </button>
       </div>
     </header>
 
@@ -92,7 +92,7 @@
         <div class="banner-content-large">
           <h2>☕ 저당 시리즈</h2>
           <p>건강하게 즐기는 카페 라이프</p>
-          <p class="banner-subtitle">일일 권장 당류 50g (각설탕 약 12개)</p>
+          <p class="banner-subtitle">건강한 선택, 달당과 함께</p>
         </div>
       </div>
       <button class="banner-btn-large prev" onclick="changeBanner(-1)">‹</button>
@@ -103,11 +103,6 @@
         <span class="indicator active" onclick="goToBanner(0)"></span>
         <span class="indicator" onclick="goToBanner(1)"></span>
       </div>
-    </div>
-    
-    <!-- 일일 권장량 안내 -->
-    <div class="info-bar">
-      💡 일일 권장 당류 <strong>50g (각설탕 약 12개)</strong>
     </div>
 
     <!-- 브랜드 필터 -->
