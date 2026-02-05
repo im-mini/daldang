@@ -422,15 +422,19 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// 검색 오버레이 토글
+// 검색창 토글
 function toggleSearch() {
-  const overlay = document.getElementById('searchOverlay');
+  const searchMiddle = document.getElementById('searchMiddle');
+  const searchBtn = document.querySelector('.search-icon-btn');
   const searchInput = document.getElementById('searchInput');
   
-  overlay.classList.toggle('active');
+  searchMiddle.classList.toggle('active');
+  searchBtn.classList.toggle('active');
   
-  if (overlay.classList.contains('active')) {
+  if (searchMiddle.classList.contains('active')) {
     searchInput.focus();
+  } else {
+    searchInput.blur();
   }
 }
 
