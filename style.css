@@ -76,7 +76,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(255, 254, 249, 0.95);
+  background: rgba(255, 254, 249, 0.98);
   backdrop-filter: blur(10px);
   z-index: 100;
   box-shadow: 0 1px 4px var(--shadow);
@@ -90,22 +90,83 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1.5rem;
 }
 
-/* 검색 아이콘 버튼 */
+/* 좌측 로고 섹션 */
+.logo-section-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 150px;
+}
+
+.logo-minimal {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.daily-info-small {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.daily-info-small strong {
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+/* 중간 검색창 */
+.search-middle {
+  flex: 1;
+  max-width: 600px;
+  display: none;
+  animation: slideDown 0.3s ease;
+}
+
+.search-middle.active {
+  display: block;
+}
+
+.search-input-middle {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  border: 2px solid var(--primary);
+  border-radius: 50px;
+  font-size: 0.95rem;
+  background: var(--surface);
+  font-family: 'Noto Sans KR', sans-serif;
+  transition: all 0.3s;
+}
+
+.search-input-middle:focus {
+  outline: none;
+  box-shadow: 0 4px 12px rgba(255, 230, 109, 0.3);
+}
+
+.search-input-middle::placeholder {
+  color: var(--text-muted);
+}
+
+/* 우측 검색 아이콘 버튼 */
 .search-icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: none;
   background: var(--primary);
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s;
   box-shadow: 0 2px 8px rgba(255, 230, 109, 0.3);
+  flex-shrink: 0;
 }
 
 .search-icon-btn:hover {
@@ -113,81 +174,8 @@ body {
   transform: scale(1.1);
 }
 
-/* 미니멀 로고 */
-.logo-minimal {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--text);
-}
-
-/* 검색 오버레이 */
-.search-overlay {
-  display: none;
-  position: fixed;
-  top: 60px;
-  left: 0;
-  right: 0;
-  background: var(--surface);
-  box-shadow: 0 4px 12px var(--shadow);
-  z-index: 99;
-  padding: 1rem;
-  animation: slideDown 0.3s ease;
-}
-
-.search-overlay.active {
-  display: block;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.search-overlay-content {
-  max-width: 800px;
-  margin: 0 auto;
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.search-input-overlay {
-  flex: 1;
-  padding: 1rem 1.5rem;
-  border: 2px solid var(--primary);
-  border-radius: 50px;
-  font-size: 1rem;
-  background: var(--bg);
-  font-family: 'Noto Sans KR', sans-serif;
-  transition: all 0.3s;
-}
-
-.search-input-overlay:focus {
-  outline: none;
-  box-shadow: 0 4px 12px rgba(255, 230, 109, 0.3);
-}
-
-.search-close-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: none;
-  background: var(--border);
-  font-size: 1.2rem;
-  cursor: pointer;
-  color: var(--text-muted);
-  transition: all 0.2s;
-}
-
-.search-close-btn:hover {
+.search-icon-btn.active {
   background: var(--text-muted);
-  color: white;
 }
 
 /* 대형 히어로 배너 */
@@ -879,26 +867,43 @@ body {
 /* 반응형 */
 @media (max-width: 768px) {
   .container {
-    padding: 60px 0.75rem 100px;
+    padding: 100px 0.75rem 100px; /* 헤더가 더 커질 수 있으므로 */
+  }
+
+  .header-minimal {
+    flex-wrap: wrap;
+  }
+
+  .logo-section-left {
+    order: 1;
+    min-width: auto;
   }
 
   .logo-minimal {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
+  }
+
+  .daily-info-small {
+    font-size: 0.65rem;
   }
 
   .search-icon-btn {
-    width: 36px;
-    height: 36px;
-    font-size: 1rem;
+    order: 2;
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
   }
 
-  .search-overlay-content {
-    flex-direction: column;
+  .search-middle {
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 0.5rem;
   }
 
-  .search-input-overlay {
-    font-size: 0.95rem;
-    padding: 0.9rem 1.25rem;
+  .search-input-middle {
+    font-size: 0.9rem;
+    padding: 0.65rem 1rem;
   }
 
   .hero-banner {
