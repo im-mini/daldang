@@ -422,16 +422,46 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// 검색 오버레이 토글
+function toggleSearch() {
+  const overlay = document.getElementById('searchOverlay');
+  const searchInput = document.getElementById('searchInput');
+  
+  overlay.classList.toggle('active');
+  
+  if (overlay.classList.contains('active')) {
+    searchInput.focus();
+  }
+}
+
+// 배너 인디케이터로 이동
+function goToBanner(index) {
+  const slides = document.querySelectorAll('.banner-slide');
+  const indicators = document.querySelectorAll('.indicator');
+  
+  slides[state.bannerIndex].classList.remove('active');
+  indicators[state.bannerIndex].classList.remove('active');
+  
+  state.bannerIndex = index;
+  
+  slides[state.bannerIndex].classList.add('active');
+  indicators[state.bannerIndex].classList.add('active');
+}
+
 // 배너 슬라이드 변경
 function changeBanner(direction) {
   const slides = document.querySelectorAll('.banner-slide');
+  const indicators = document.querySelectorAll('.indicator');
+  
   slides[state.bannerIndex].classList.remove('active');
+  indicators[state.bannerIndex].classList.remove('active');
   
   state.bannerIndex += direction;
   if (state.bannerIndex < 0) state.bannerIndex = slides.length - 1;
   if (state.bannerIndex >= slides.length) state.bannerIndex = 0;
   
   slides[state.bannerIndex].classList.add('active');
+  indicators[state.bannerIndex].classList.add('active');
 }
 
 // 스크롤 이벤트
