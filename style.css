@@ -67,59 +67,241 @@ body {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 140px 1rem 100px; /* 고정 헤더 높이만큼 상단 패딩 */
+  padding: 60px 1rem 100px; /* 미니멀 헤더만큼만 패딩 */
 }
 
-/* 고정 헤더 */
+/* 미니멀 고정 헤더 */
 .fixed-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  background: var(--bg);
+  background: rgba(255, 254, 249, 0.95);
+  backdrop-filter: blur(10px);
   z-index: 100;
-  box-shadow: 0 2px 8px var(--shadow);
-  padding: 1rem 0;
+  box-shadow: 0 1px 4px var(--shadow);
+  padding: 0.75rem 0;
 }
 
-.header-top {
+.header-minimal {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 2rem;
 }
 
-.logo-section {
+/* 검색 아이콘 버튼 */
+.search-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary);
+  font-size: 1.2rem;
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(255, 230, 109, 0.3);
 }
 
-.logo {
-  font-size: 1.8rem;
+.search-icon-btn:hover {
+  background: var(--primary-dark);
+  transform: scale(1.1);
+}
+
+/* 미니멀 로고 */
+.logo-minimal {
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--text);
-  margin: 0;
-  white-space: nowrap;
 }
 
-.daily-info {
-  font-size: 0.8rem;
+/* 검색 오버레이 */
+.search-overlay {
+  display: none;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  box-shadow: 0 4px 12px var(--shadow);
+  z-index: 99;
+  padding: 1rem;
+  animation: slideDown 0.3s ease;
+}
+
+.search-overlay.active {
+  display: block;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-overlay-content {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.search-input-overlay {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border: 2px solid var(--primary);
+  border-radius: 50px;
+  font-size: 1rem;
+  background: var(--bg);
+  font-family: 'Noto Sans KR', sans-serif;
+  transition: all 0.3s;
+}
+
+.search-input-overlay:focus {
+  outline: none;
+  box-shadow: 0 4px 12px rgba(255, 230, 109, 0.3);
+}
+
+.search-close-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--border);
+  font-size: 1.2rem;
+  cursor: pointer;
   color: var(--text-muted);
-  margin: 0;
+  transition: all 0.2s;
 }
 
-.daily-info strong {
+.search-close-btn:hover {
+  background: var(--text-muted);
+  color: white;
+}
+
+/* 대형 히어로 배너 */
+.hero-banner {
+  position: relative;
+  background: linear-gradient(135deg, #FFF4A3, #FFE66D, #FFD93D);
+  border-radius: 0;
+  margin: 0 -1rem 2rem;
+  overflow: hidden;
+  height: 400px;
+}
+
+.banner-slide {
+  display: none;
+  height: 100%;
+}
+
+.banner-slide.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.5s;
+}
+
+.banner-content-large {
+  text-align: center;
+  padding: 2rem;
+  max-width: 800px;
+}
+
+.banner-content-large h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--text);
+  font-weight: 800;
+}
+
+.banner-content-large p {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.banner-subtitle {
+  font-size: 1.1rem !important;
+  color: var(--text-muted) !important;
+  font-weight: 400 !important;
+}
+
+.banner-btn-large {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 2rem;
+  color: var(--text);
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.banner-btn-large:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.banner-btn-large.prev { left: 2rem; }
+.banner-btn-large.next { right: 2rem; }
+
+/* 배너 인디케이터 */
+.banner-indicators {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.75rem;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.indicator.active {
+  background: white;
+  width: 32px;
+  border-radius: 6px;
+}
+
+/* 정보 바 */
+.info-bar {
+  background: linear-gradient(135deg, rgba(255, 230, 109, 0.2), rgba(255, 244, 163, 0.2));
+  border-left: 4px solid var(--primary);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.info-bar strong {
   color: var(--primary-dark);
   font-weight: 700;
-}
-
-.search-section-header {
-  flex: 1;
-  max-width: 600px;
 }
 
 /* 배너 광고 */
@@ -697,44 +879,53 @@ body {
 /* 반응형 */
 @media (max-width: 768px) {
   .container {
-    padding: 180px 0.75rem 100px;
+    padding: 60px 0.75rem 100px;
   }
 
-  .header-top {
+  .logo-minimal {
+    font-size: 1.1rem;
+  }
+
+  .search-icon-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .search-overlay-content {
     flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
   }
 
-  .logo-section {
-    text-align: center;
+  .search-input-overlay {
+    font-size: 0.95rem;
+    padding: 0.9rem 1.25rem;
   }
 
-  .logo {
+  .hero-banner {
+    height: 300px;
+    margin: 0 0 1.5rem;
+  }
+
+  .banner-content-large h2 {
+    font-size: 2rem;
+  }
+
+  .banner-content-large p {
+    font-size: 1.1rem;
+  }
+
+  .banner-subtitle {
+    font-size: 0.9rem !important;
+  }
+
+  .banner-btn-large {
+    width: 40px;
+    height: 40px;
     font-size: 1.5rem;
   }
 
-  .daily-info {
-    font-size: 0.75rem;
-  }
-
-  .search-section-header {
-    max-width: 100%;
-  }
-
-  .banner-ad {
-    padding: 2rem 1.5rem;
-    height: 140px;
-  }
-
-  .banner-content h3 {
-    font-size: 1.2rem;
-  }
-
-  .search-input {
-    font-size: 0.95rem;
-    padding: 0.9rem 3.25rem 0.9rem 1rem;
-  }
+  .banner-btn-large.prev { left: 1rem; }
+  .banner-btn-large.next { right: 1rem; }
 
   .controls {
     flex-direction: column;
