@@ -29,13 +29,20 @@ body {
 /* 광고 사이드바 */
 .ad-sidebar {
   position: fixed;
-  top: 120px;
+  top: 150px;
   width: 160px;
   display: none;
+  z-index: 50;
 }
 
-.ad-left { left: 20px; }
-.ad-right { right: 20px; }
+/* 컨테이너 중앙 기준으로 광고 배치 (겹치지 않게) */
+.ad-left { 
+  left: calc((100vw - 1200px) / 2 - 180px);
+}
+
+.ad-right { 
+  right: calc((100vw - 1200px) / 2 - 180px);
+}
 
 .ad-box {
   background: var(--surface);
@@ -51,7 +58,8 @@ body {
   justify-content: center;
 }
 
-@media (min-width: 1400px) {
+/* 충분한 화면 너비에서만 광고 표시 (1600px 이상) */
+@media (min-width: 1600px) {
   .ad-sidebar { display: block; }
 }
 
