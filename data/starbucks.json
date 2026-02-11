@@ -1,72 +1,72 @@
 [
-  {
-    "id": "starbucks-1",
-    "brand": "스타벅스",
-    "name": "자바칩 프라푸치노",
-    "sugar": 42,
-    "tags": ["초코", "프라푸치노", "베스트"],
-    "칼로리": "472",
-    "sweetener": [],
-    "등록일": "2025-11-15"
-  },
-  {
-    "id": "starbucks-2",
-    "brand": "스타벅스",
-    "name": "돌체 라떼",
-    "sugar": 35,
-    "tags": ["연유", "달콤"],
-    "칼로리": "432",
-    "sweetener": [],
-    "등록일": "2026-02-01"
-  },
-  {
-    "id": "starbucks-3",
-    "brand": "스타벅스",
-    "name": "아메리카노",
-    "sugar": 0,
-    "tags": ["제로슈가"],
-    "칼로리": "10",
-    "sweetener": [],
-    "등록일": "2025-01-01"
-  },
-  {
-    "id": "starbucks-4",
-    "brand": "스타벅스",
-    "name": "카라멜 마키아또",
-    "sugar": 25,
-    "tags": ["카라멜", "베스트"],
-    "칼로리": "245",
-    "sweetener": [],
-    "등록일": "2025-05-10"
-  },
-  {
-    "id": "starbucks-5",
-    "brand": "스타벅스",
-    "name": "말차 라떼",
-    "sugar": 32,
-    "tags": ["말차", "달콤"],
-    "칼로리": "310",
-    "sweetener": [],
-    "등록일": "2025-08-20"
-  },
-  {
-    "id": "starbucks-6",
-    "brand": "스타벅스",
-    "name": "자몽 허니 블랙티",
-    "sugar": 30,
-    "tags": ["과일", "티", "신상품"],
-    "칼로리": "180",
-    "sweetener": [],
-    "등록일": "2026-01-25"
-  },
-  {
-    "id": "starbucks-7",
-    "brand": "스타벅스",
-    "name": "제로 슈거 바닐라 라떼",
-    "sugar": 0,
-    "tags": ["제로슈가", "바닐라", "신상품"],
-    "칼로리": "80",
-    "sweetener": ["수크랄로스", "아세설팜칼륨"],
-    "등록일": "2026-01-30"
-  }
+  /* --- 1. COFFEE (에스프레소 & 블론드 & 브루드) --- */
+  { "id": "sb-101", "name": "카페 아메리카노", "sugar": 0, "caffeine": 150, "tags": ["Coffee"], "kcal": 10 },
+  { "id": "sb-102", "name": "카페 라떼", "sugar": 13, "caffeine": 150, "tags": ["Coffee"], "kcal": 180 },
+  { "id": "sb-103", "name": "스타벅스 돌체 라떼", "sugar": 39, "caffeine": 150, "tags": ["Coffee"], "kcal": 255 },
+  { "id": "sb-104", "name": "카라멜 마키아또", "sugar": 22, "caffeine": 150, "tags": ["Coffee"], "kcal": 200 },
+  { "id": "sb-105", "name": "카페 모카", "sugar": 25, "caffeine": 95, "tags": ["Coffee"], "kcal": 290 },
+  { "id": "sb-106", "name": "화이트 초콜릿 모카", "sugar": 41, "caffeine": 95, "tags": ["Coffee"], "kcal": 345 },
+  { "id": "sb-107", "name": "바닐라 플랫 화이트", "sugar": 13, "caffeine": 130, "tags": ["Coffee"], "kcal": 220 },
+  { "id": "sb-108", "name": "카푸치노", "sugar": 10, "caffeine": 150, "tags": ["Coffee"], "kcal": 115 },
+  { "id": "sb-109", "name": "에스프레소", "sugar": 0, "caffeine": 75, "tags": ["Espresso"], "kcal": 5 },
+  { "id": "sb-110", "name": "에스프레소 콘 파나", "sugar": 1, "caffeine": 75, "tags": ["Espresso"], "kcal": 30 },
+  { "id": "sb-111", "name": "에스프레소 마키아또", "sugar": 0, "caffeine": 75, "tags": ["Espresso"], "kcal": 10 },
+  { "id": "sb-112", "name": "블론드 카페 아메리카노", "sugar": 0, "caffeine": 170, "tags": ["Blond"], "kcal": 10 },
+  { "id": "sb-113", "name": "블론드 카페 라떼", "sugar": 13, "caffeine": 170, "tags": ["Blond"], "kcal": 180 },
+  { "id": "sb-114", "name": "블론드 바닐라 더블 샷 마키아또", "sugar": 31, "caffeine": 170, "tags": ["Blond"], "kcal": 315 },
+  { "id": "sb-115", "name": "오늘의 커피 (Hot)", "sugar": 0, "caffeine": 260, "tags": ["Brewed"], "kcal": 5 },
+  { "id": "sb-116", "name": "아이스 커피 (Ice)", "sugar": 0, "caffeine": 140, "tags": ["Brewed"], "kcal": 5 },
+
+  /* --- 2. COLD BREW (콜드 브루 전종) --- */
+  { "id": "sb-201", "name": "콜드 브루", "sugar": 0, "caffeine": 155, "tags": ["ColdBrew"], "kcal": 5 },
+  { "id": "sb-202", "name": "바닐라 크림 콜드 브루", "sugar": 11, "caffeine": 155, "tags": ["ColdBrew"], "kcal": 125 },
+  { "id": "sb-203", "name": "돌체 콜드 브루", "sugar": 29, "caffeine": 155, "tags": ["ColdBrew"], "kcal": 265 },
+  { "id": "sb-204", "name": "나이트로 콜드 브루", "sugar": 0, "caffeine": 245, "tags": ["Nitro"], "kcal": 5 },
+  { "id": "sb-205", "name": "나이트로 바닐라 크림", "sugar": 10, "caffeine": 232, "tags": ["Nitro"], "kcal": 80 },
+  { "id": "sb-206", "name": "민트 콜드 브루", "sugar": 25, "caffeine": 155, "tags": ["ColdBrew"], "kcal": 100 },
+  { "id": "sb-207", "name": "제주 시트러스 허니 콜드 브루", "sugar": 34, "caffeine": 155, "tags": ["JejuOnly"], "kcal": 165 },
+
+  /* --- 3. FRAPPUCCINO (프라푸치노 전종) --- */
+  { "id": "sb-301", "name": "자바 칩 프라푸치노", "sugar": 42, "caffeine": 100, "tags": ["Frappuccino"], "kcal": 340 },
+  { "id": "sb-302", "name": "카라멜 프라푸치노", "sugar": 39, "caffeine": 90, "tags": ["Frappuccino"], "kcal": 300 },
+  { "id": "sb-303", "name": "에스프레소 프라푸치노", "sugar": 29, "caffeine": 120, "tags": ["Frappuccino"], "kcal": 145 },
+  { "id": "sb-304", "name": "화이트 초콜릿 모카 프라푸치노", "sugar": 35, "caffeine": 0, "tags": ["Frappuccino"], "kcal": 245 },
+  { "id": "sb-305", "name": "초콜릿 크림 칩 프라푸치노", "sugar": 40, "caffeine": 10, "tags": ["Frappuccino"], "kcal": 300 },
+  { "id": "sb-306", "name": "제주 유기농 말차 크림 프라푸치노", "sugar": 28, "caffeine": 60, "tags": ["Frappuccino"], "kcal": 230 },
+  { "id": "sb-307", "name": "피스타치오 크림 프라푸치노", "sugar": 32, "caffeine": 0, "tags": ["Frappuccino"], "kcal": 335 },
+  { "id": "sb-308", "name": "제주 까망 크림 프라푸치노", "sugar": 54, "caffeine": 0, "tags": ["JejuOnly"], "kcal": 600 },
+  { "id": "sb-309", "name": "제주 쑥떡 크림 프라푸치노", "sugar": 48, "caffeine": 0, "tags": ["JejuOnly"], "kcal": 460 },
+
+  /* --- 4. BLENDED (블렌디드 전종) --- */
+  { "id": "sb-401", "name": "딸기 딜라이트 요거트 블렌디드", "sugar": 54, "caffeine": 0, "tags": ["Blended"], "kcal": 370 },
+  { "id": "sb-402", "name": "망고 바나나 블렌디드", "sugar": 45, "caffeine": 0, "tags": ["Blended"], "kcal": 240 },
+  { "id": "sb-403", "name": "망고 패션 티 블렌디드", "sugar": 25, "caffeine": 35, "tags": ["Blended"], "kcal": 120 },
+  { "id": "sb-404", "name": "더블 레몬 블렌디드", "sugar": 38, "caffeine": 0, "tags": ["Blended"], "kcal": 99 },
+  { "id": "sb-405", "name": "제주 금귤 듬뿍 블렌디드", "sugar": 42, "caffeine": 0, "tags": ["JejuOnly"], "kcal": 220 },
+
+  /* --- 5. TEAVANA (티바나 제조 음료 전종) --- */
+  { "id": "sb-501", "name": "자몽 허니 블랙 티", "sugar": 30, "caffeine": 30, "tags": ["Teavana"], "kcal": 125 },
+  { "id": "sb-502", "name": "클래식 밀크 티", "sugar": 31, "caffeine": 110, "tags": ["Teavana"], "kcal": 299 },
+  { "id": "sb-503", "name": "제주 유기농 말차로 만든 라떼", "sugar": 28, "caffeine": 60, "tags": ["Teavana"], "kcal": 155 },
+  { "id": "sb-504", "name": "얼 그레이 티 라떼", "sugar": 20, "caffeine": 50, "tags": ["Teavana"], "kcal": 210 },
+  { "id": "sb-505", "name": "유자 민트 티", "sugar": 35, "caffeine": 0, "tags": ["Teavana"], "kcal": 145 },
+  { "id": "sb-506", "name": "피치 밸런스드 티", "sugar": 32, "caffeine": 0, "tags": ["Teavana"], "kcal": 110 },
+  { "id": "sb-507", "name": "푸른 용 클래식 밀크 티", "sugar": 35, "caffeine": 110, "tags": ["Season"], "kcal": 320 },
+  { "id": "sb-508", "name": "잉글리쉬 브렉퍼스트 티 라떼", "sugar": 20, "caffeine": 40, "tags": ["Teavana"], "kcal": 210 },
+  { "id": "sb-509", "name": "제주 어린 잎 녹차", "sugar": 0, "caffeine": 20, "tags": ["Teavana"], "kcal": 0 },
+  { "id": "sb-510", "name": "민트 블렌드 티", "sugar": 0, "caffeine": 0, "tags": ["Teavana"], "kcal": 0 },
+  { "id": "sb-511", "name": "유스베리 티", "sugar": 0, "caffeine": 20, "tags": ["Teavana"], "kcal": 0 },
+  { "id": "sb-512", "name": "히비스커스 블렌드 티", "sugar": 0, "caffeine": 0, "tags": ["Teavana"], "kcal": 0 },
+
+  /* --- 6. REFRESHERS (리프레셔 전종) --- */
+  { "id": "sb-601", "name": "딸기 아사이 레모네이드 리프레셔", "sugar": 24, "caffeine": 30, "tags": ["Refresher"], "kcal": 105 },
+  { "id": "sb-602", "name": "핑크 드링크 에드 스트로베리 아사이 리프레셔", "sugar": 25, "caffeine": 30, "tags": ["Refresher"], "kcal": 125 },
+  { "id": "sb-603", "name": "망고 용과 레모네이드 리프레셔", "sugar": 23, "caffeine": 25, "tags": ["Refresher"], "kcal": 95 },
+  { "id": "sb-604", "name": "퍼플 드링크 위드 망고 용과 리프레셔", "sugar": 24, "caffeine": 25, "tags": ["Refresher"], "kcal": 100 },
+
+  /* --- 7. OTHERS (기타) --- */
+  { "id": "sb-701", "name": "시그니처 핫 초콜릿", "sugar": 37, "caffeine": 15, "tags": ["Others"], "kcal": 435 },
+  { "id": "sb-702", "name": "아이스 시그니처 초콜릿", "sugar": 37, "caffeine": 15, "tags": ["Others"], "kcal": 435 },
+  { "id": "sb-703", "name": "스팀 우유", "sugar": 13, "caffeine": 0, "tags": ["Others"], "kcal": 170 },
+  { "id": "sb-704", "name": "리얼 딸기 라떼", "sugar": 45, "caffeine": 0, "tags": ["Season"], "kcal": 240 }
 ]
