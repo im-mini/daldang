@@ -1,12 +1,88 @@
 [
-  { "id": "c1", "brand": "컴포즈커피", "name": "리얼초코 자바칩 프라페", "sugar": 57, "tags": ["초코", "프라페", "당충전"] },
-  { "id": "c2", "brand": "컴포즈커피", "name": "쿠키초코 프라페", "sugar": 62, "tags": ["쿠키", "달달", "베스트"] },
-  { "id": "c3", "brand": "컴포즈커피", "name": "민트초코 프라페", "sugar": 48, "tags": ["민초", "호불호", "시원"] },
-  { "id": "c4", "brand": "컴포즈커피", "name": "딸기 요거트 스무디", "sugar": 65, "tags": ["딸기", "요거트", "상큼"] },
-  { "id": "c5", "brand": "컴포즈커피", "name": "블루베리 요거트 스무디", "sugar": 63, "tags": ["블루베리", "요거트"] },
-  { "id": "c6", "brand": "컴포즈커피", "name": "망고 스무디", "sugar": 52, "tags": ["망고", "여름제격"] },
-  { "id": "c7", "brand": "컴포즈커피", "name": "샤인머스캣 에이드", "sugar": 45, "tags": ["청포도", "톡쏘는", "탄산"] },
-  { "id": "c8", "brand": "컴포즈커피", "name": "자몽 에이드", "sugar": 38, "tags": ["자몽", "쌉싸름"] },
-  { "id": "c9", "brand": "컴포즈커피", "name": "밀크쉐이크", "sugar": 55, "tags": ["우유", "상하목장"] },
-  { "id": "c10", "brand": "컴포즈커피", "name": "흑당 밀크티", "sugar": 50, "tags": ["흑당", "버블", "쫄깃"] }
+  /* --- 1. ESPRESSO COFFEE (에스프레소 기반) --- */
+  { "id": "cp-001", "brand": "컴포즈", "name": "아메리카노(HOT)", "sugar": 0, "caffeine": 156, "tags": ["커피"], "칼로리": "15" },
+  { "id": "cp-002", "brand": "컴포즈", "name": "아메리카노(ICE)", "sugar": 0, "caffeine": 156, "tags": ["커피"], "칼로리": "15" },
+  { "id": "cp-003", "brand": "컴포즈", "name": "카페라떼", "sugar": 10, "caffeine": 156, "tags": ["커피"], "칼로리": "204" },
+  { "id": "cp-004", "brand": "컴포즈", "name": "카푸치노", "sugar": 10, "caffeine": 156, "tags": ["커피"], "칼로리": "195" },
+  { "id": "cp-005", "brand": "컴포즈", "name": "바닐라라떼", "sugar": 28, "caffeine": 156, "tags": ["커피", "시럽"], "칼로리": "252" },
+  { "id": "cp-006", "brand": "컴포즈", "name": "헤이즐넛라떼", "sugar": 26, "caffeine": 156, "tags": ["커피", "시럽"], "칼로리": "248" },
+  { "id": "cp-007", "brand": "컴포즈", "name": "카라멜마끼아또", "sugar": 35, "caffeine": 156, "tags": ["커피"], "칼로리": "265" },
+  { "id": "cp-008", "brand": "컴포즈", "name": "카페모카", "sugar": 32, "caffeine": 162, "tags": ["커피"], "칼로리": "320" },
+  { "id": "cp-009", "brand": "컴포즈", "name": "돌체라떼", "sugar": 41, "caffeine": 156, "tags": ["커피", "연유"], "칼로리": "335" },
+  { "id": "cp-010", "brand": "컴포즈", "name": "흑당카페라떼", "sugar": 48, "caffeine": 156, "tags": ["커피"], "칼로리": "382" },
+  { "id": "cp-011", "brand": "컴포즈", "name": "달고나라떼", "sugar": 52, "caffeine": 156, "tags": ["커피"], "칼로리": "395" },
+  { "id": "cp-012", "brand": "컴포즈", "name": "아인슈페너", "sugar": 22, "caffeine": 156, "tags": ["커피"], "칼로리": "285" },
+  { "id": "cp-013", "brand": "컴포즈", "name": "아인슈페너라떼", "sugar": 28, "caffeine": 156, "tags": ["커피"], "칼로리": "340" },
+
+  /* --- 2. DECAFFEINATED (디카페인 - 변경 가능한 옵션 전수) --- */
+  { "id": "cp-014", "brand": "컴포즈", "name": "디카페인 아메리카노", "sugar": 0, "caffeine": 6, "tags": ["디카페인"] },
+  { "id": "cp-015", "brand": "컴포즈", "name": "디카페인 카페라떼", "sugar": 10, "caffeine": 6, "tags": ["디카페인"] },
+  { "id": "cp-016", "brand": "컴포즈", "name": "디카페인 바닐라라떼", "sugar": 28, "caffeine": 6, "tags": ["디카페인"] },
+  { "id": "cp-017", "brand": "컴포즈", "name": "디카페인 헤이즐넛라떼", "sugar": 26, "caffeine": 6, "tags": ["디카페인"] },
+  { "id": "cp-018", "brand": "컴포즈", "name": "디카페인 카라멜마끼아또", "sugar": 35, "caffeine": 6, "tags": ["디카페인"] },
+  { "id": "cp-019", "brand": "컴포즈", "name": "디카페인 카페모카", "sugar": 32, "caffeine": 12, "tags": ["디카페인"] },
+  { "id": "cp-020", "brand": "컴포즈", "name": "디카페인 돌체라떼", "sugar": 41, "caffeine": 6, "tags": ["디카페인"] },
+
+  /* --- 3. DUTCH COFFEE (더치커피) --- */
+  { "id": "cp-021", "brand": "컴포즈", "name": "더치커피", "sugar": 0, "caffeine": 142, "tags": ["더치"] },
+  { "id": "cp-022", "brand": "컴포즈", "name": "더치라떼", "sugar": 9, "caffeine": 142, "tags": ["더치"] },
+  { "id": "cp-023", "brand": "컴포즈", "name": "디카페인 더치커피", "sugar": 0, "caffeine": 3, "tags": ["더치", "디카페인"] },
+  { "id": "cp-024", "brand": "컴포즈", "name": "디카페인 더치라떼", "sugar": 9, "caffeine": 3, "tags": ["더치", "디카페인"] },
+
+  /* --- 4. NON-COFFEE BEVERAGE (라떼류) --- */
+  { "id": "cp-025", "brand": "컴포즈", "name": "리얼초코라떼", "sugar": 45, "caffeine": 15, "tags": ["논커피"] },
+  { "id": "cp-026", "brand": "컴포즈", "name": "그린티라떼", "sugar": 35, "caffeine": 95, "tags": ["논커피"] },
+  { "id": "cp-027", "brand": "컴포즈", "name": "곡물라떼", "sugar": 25, "caffeine": 0, "tags": ["논커피"] },
+  { "id": "cp-028", "brand": "컴포즈", "name": "고구마라떼", "sugar": 38, "caffeine": 0, "tags": ["논커피"] },
+  { "id": "cp-029", "brand": "컴포즈", "name": "딸기라떼", "sugar": 42, "caffeine": 0, "tags": ["논커피"] },
+  { "id": "cp-030", "brand": "컴포즈", "name": "밀크티", "sugar": 36, "caffeine": 110, "tags": ["논커피"] },
+  { "id": "cp-031", "brand": "컴포즈", "name": "흑당라떼", "sugar": 42, "caffeine": 0, "tags": ["논커피"] },
+  { "id": "cp-032", "brand": "컴포즈", "name": "흑당밀크티", "sugar": 48, "caffeine": 110, "tags": ["논커피"] },
+
+  /* --- 5. ADE (에이드 - 개별 분리) --- */
+  { "id": "cp-033", "brand": "컴포즈", "name": "레몬에이드", "sugar": 45, "caffeine": 0, "tags": ["에이드"] },
+  { "id": "cp-034", "brand": "컴포즈", "name": "자몽에이드", "sugar": 42, "caffeine": 0, "tags": ["에이드"] },
+  { "id": "cp-035", "brand": "컴포즈", "name": "청포도에이드", "sugar": 48, "caffeine": 0, "tags": ["에이드"] },
+  { "id": "cp-036", "brand": "컴포즈", "name": "블루레몬에이드", "sugar": 46, "caffeine": 0, "tags": ["에이드"] },
+  { "id": "cp-037", "brand": "컴포즈", "name": "유자에이드", "sugar": 50, "caffeine": 0, "tags": ["에이드"] },
+  { "id": "cp-038", "brand": "컴포즈", "name": "패션후르츠에이드", "sugar": 44, "caffeine": 0, "tags": ["에이드"] },
+
+  /* --- 6. SHAKE (상하목장 아이스크림 베이스 쉐이크) --- */
+  { "id": "cp-039", "brand": "컴포즈", "name": "플레인밀크쉐이크", "sugar": 55, "caffeine": 0, "tags": ["쉐이크"] },
+  { "id": "cp-040", "brand": "컴포즈", "name": "쿠키밀크쉐이크", "sugar": 62, "caffeine": 12, "tags": ["쉐이크"] },
+  { "id": "cp-041", "brand": "컴포즈", "name": "팥절미밀크쉐이크", "sugar": 68, "caffeine": 0, "tags": ["쉐이크"] },
+  { "id": "cp-042", "brand": "컴포즈", "name": "베리베리밀크쉐이크", "sugar": 60, "caffeine": 0, "tags": ["쉐이크"] },
+  { "id": "cp-043", "brand": "컴포즈", "name": "커피밀크쉐이크", "sugar": 52, "caffeine": 156, "tags": ["쉐이크", "커피"] },
+
+  /* --- 7. FRAPPE & SMOOTHIE (블렌디드 음료) --- */
+  { "id": "cp-044", "brand": "컴포즈", "name": "리얼초코자바칩프라페", "sugar": 68, "caffeine": 25, "tags": ["프라페"] },
+  { "id": "cp-045", "brand": "컴포즈", "name": "쿠키초코프라페", "sugar": 62, "caffeine": 15, "tags": ["프라페"] },
+  { "id": "cp-046", "brand": "컴포즈", "name": "민트초코오레오프라페", "sugar": 58, "caffeine": 20, "tags": ["프라페"] },
+  { "id": "cp-047", "brand": "컴포즈", "name": "그린티프라페", "sugar": 55, "caffeine": 95, "tags": ["프라페"] },
+  { "id": "cp-048", "brand": "컴포즈", "name": "모카자바칩프라페", "sugar": 65, "caffeine": 181, "tags": ["프라페", "커피"] },
+  { "id": "cp-049", "brand": "컴포즈", "name": "플레인요거트스무디", "sugar": 62, "caffeine": 0, "tags": ["스무디"] },
+  { "id": "cp-050", "brand": "컴포즈", "name": "딸기요거트스무디", "sugar": 68, "caffeine": 0, "tags": ["스무디"] },
+  { "id": "cp-051", "brand": "컴포즈", "name": "망고요거트스무디", "sugar": 65, "caffeine": 0, "tags": ["스무디"] },
+  { "id": "cp-052", "brand": "컴포즈", "name": "블루베리요거트스무디", "sugar": 64, "caffeine": 0, "tags": ["스무디"] },
+
+  /* --- 8. TEA & JUICE (티 및 주스 개별 분리) --- */
+  { "id": "cp-053", "brand": "컴포즈", "name": "복숭아아이스티", "sugar": 52, "caffeine": 10, "tags": ["티"] },
+  { "id": "cp-054", "brand": "컴포즈", "name": "허니레몬티", "sugar": 45, "caffeine": 0, "tags": ["티"] },
+  { "id": "cp-055", "brand": "컴포즈", "name": "허니자몽티", "sugar": 42, "caffeine": 0, "tags": ["티"] },
+  { "id": "cp-056", "brand": "컴포즈", "name": "허니유자티", "sugar": 50, "caffeine": 0, "tags": ["티"] },
+  { "id": "cp-057", "brand": "컴포즈", "name": "페퍼민트", "sugar": 0, "caffeine": 0, "tags": ["허브티"] },
+  { "id": "cp-058", "brand": "컴포즈", "name": "캐모마일", "sugar": 0, "caffeine": 0, "tags": ["허브티"] },
+  { "id": "cp-059", "brand": "컴포즈", "name": "얼그레이", "sugar": 0, "caffeine": 45, "tags": ["허브티"] },
+  { "id": "cp-060", "brand": "컴포즈", "name": "로즈힙", "sugar": 0, "caffeine": 0, "tags": ["허브티"] },
+  { "id": "cp-061", "brand": "컴포즈", "name": "키위주스", "sugar": 45, "caffeine": 0, "tags": ["주스"] },
+  { "id": "cp-062", "brand": "컴포즈", "name": "케일바나나주스", "sugar": 38, "caffeine": 0, "tags": ["주스"] },
+  { "id": "cp-063", "brand": "컴포즈", "name": "오렌지당근주스", "sugar": 40, "caffeine": 0, "tags": ["주스"] },
+
+  /* --- 9. SEASON & NEW (2026 시즌 신메뉴 전종) --- */
+  { "id": "cp-064", "brand": "컴포즈", "name": "생딸기라떼", "sugar": 48, "caffeine": 0, "tags": ["시즌", "딸기"] },
+  { "id": "cp-065", "brand": "컴포즈", "name": "생딸기주스", "sugar": 40, "caffeine": 0, "tags": ["시즌", "딸기"] },
+  { "id": "cp-066", "brand": "컴포즈", "name": "딸기사과티플레저", "sugar": 52, "caffeine": 0, "tags": ["시즌"] },
+  { "id": "cp-067", "brand": "컴포즈", "name": "제로 복숭아 아이스티", "sugar": 0, "caffeine": 10, "tags": ["제로"] },
+  { "id": "cp-068", "brand": "컴포즈", "name": "빅포션 제로 아이스티", "sugar": 0, "caffeine": 10, "tags": ["제로", "대용량"] },
+  { "id": "cp-069", "brand": "컴포즈", "name": "스위트콘 카페라떼", "sugar": 35, "caffeine": 156, "tags": ["시즌", "커피"] }
 ]
